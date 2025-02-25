@@ -1,4 +1,5 @@
 .history
+.vscode
 __pycache__
 *.docx
 nn/cocodataset/annotations/*

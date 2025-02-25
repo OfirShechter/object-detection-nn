@@ -11,7 +11,7 @@ import os
 os.getcwd()
 # %%
 # Load the COCO dataset
-coco = COCO('../annotations/instances_train2017.json')
+coco = COCO('nn/cocodataset/annotations/instances_train2017.json')
 # %%
 # Get all category IDs (e.g., person, car, etc.)
 cat_ids = coco.getCatIds(catNms=['dog', 'person'])  # Change to any category
@@ -21,7 +21,8 @@ img_ids = coco.getImgIds(catIds=cat_ids)
 cat_ids, img_ids
 # %%
 # Load and display an image
-img_info = coco.loadImgs(img_ids[np.random.randint(0, len(img_ids))])[0]
+# img_info = coco.loadImgs(img_ids[np.random.randint(0, len(img_ids))])[0]
+img_info = coco.loadImgs(287210)[0]
 img_url = img_info['coco_url']
 img_info
 # %%
@@ -47,7 +48,7 @@ if img is not None:
 # Load annotations for the selected image
 ann_ids = coco.getAnnIds(imgIds=img_info['id'], catIds=cat_ids, iscrowd=False)
 annotations = coco.loadAnns(ann_ids)
-annotations[0].keys()
+annotations
 
 #%%
 # Draw bounding boxes
@@ -60,4 +61,10 @@ plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
 plt.axis('off')
 plt.show()
 
+# %%
+ann_ids = coco.getAnnIds(imgIds=img_ids, catIds=cat_ids, iscrowd=False)
+# %%
+annotations = coco.loadAnns(ann_ids)
+# %%
+annotations[100]
 # %%

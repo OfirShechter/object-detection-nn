@@ -3,10 +3,10 @@ import torch.nn as nn
 import torchvision.models as models
 
 class DetectionModel(nn.Module):
-    def __init__(self, num_classes=1):
+    def __init__(self):
         super(DetectionModel, self).__init__()
         # Load pretrained VGG16
-        vgg16 = models.vgg16(pretrained=True)
+        vgg16 = models.vgg16(weights=models.VGG16_Weights.DEFAULT)
         self.backbone = nn.Sequential(*list(vgg16.features.children()))
         
         # YOLO-like detection head
