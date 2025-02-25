@@ -1,14 +1,10 @@
-import torchvision.transforms as transforms
 import torch
-from torch.utils.data import DataLoader, Dataset
-import torch.nn as nn
-import torch.optim as optim
+from torch.utils.data import Dataset
 from torchvision import models
 from pycocotools.coco import COCO
 import requests
 import cv2
 import numpy as np
-import matplotlib.pyplot as plt
 from PIL import Image
 
 class CocoDetectionByURL(Dataset):
@@ -16,11 +12,11 @@ class CocoDetectionByURL(Dataset):
         self.coco = COCO(annFile)
         self.transform = transform
         self.cat_ids = self.coco.getCatIds(catNms=categories)
-        img_ids = self.coco.getImgIds(catIds=self.cat_ids)
+        img_ids = self.coco.getImgIds(catIds=self.cat_ids)[:10] # Limit to 16 images for testing
         # fillter images with multiple annotations
         if not allow_multiple_obj:
             self.img_ids = [img_id for img_id in img_ids if len(self.coco.getAnnIds(imgIds=img_id, catIds=self.cat_ids, iscrowd=False)) == 1]
-        self.resize_transform = transforms.Resize((224, 224))  # Resize to a fixed size
+        print(f"ImageIds: {img_ids}")
 
     def __getitem__(self, index):
         coco = self.coco
@@ -38,12 +34,10 @@ class CocoDetectionByURL(Dataset):
             img = Image.fromarray(img)
         else:
             raise Exception(f"Failed to download image from {path}")
-
-        img = self.resize_transform(img)  # Apply resize transformation
-
+        
         if self.transform is not None:
             img = self.transform(img)
-        
+        print(f"Image shape: {img.shape}")
         target = torch.tensor([ann['bbox'] + [1.0] for ann in anns], dtype=torch.float32).squeeze()  # x, y, w, h, confidence
         return img, target
 
