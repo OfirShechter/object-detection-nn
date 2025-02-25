@@ -1,4 +1,5 @@
 .history
+__pycache__
 *.docx
-cocodataset/annotations/*
-!cocodataset/annotations/.gitkeep
+nn/cocodataset/annotations/*
+!nn/cocodataset/annotations/.gitkeep
