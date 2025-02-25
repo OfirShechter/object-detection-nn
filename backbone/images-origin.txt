@@ -1,0 +1,14 @@
+dog.jpg
+Page URL: https://commons.wikimedia.org/wiki/File:Canis_lupus_familiaris.001_-_Monfero.jpg
+File URL: https://upload.wikimedia.org/wikipedia/commons/7/7b/Canis_lupus_familiaris.001_-_Monfero.jpg
+Attribution: Fernando Losada Rodríguez, CC BY-SA 4.0 <https://creativecommons.org/licenses/by-sa/4.0>, via Wikimedia Commons
+
+cat.jpg
+URL: https://commons.wikimedia.org/wiki/File:Felis_catus-cat_on_snow.jpg#/media/File:Felis_catus-cat_on_snow.jpg
+Author: By Von.grzanka - Own work, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=9437797
+
+book.jpg
+https://commons.wikimedia.org/wiki/File:Otvorena_knjiga.JPG
+https://upload.wikimedia.org/wikipedia/commons/4/42/Otvorena_knjiga.JPG
+No machine-readable author provided. Pokrajac assumed (based on copyright claims)., CC BY-SA 3.0 <http://creativecommons.org/licenses/by-sa/3.0/>, via Wikimedia Commons
+
