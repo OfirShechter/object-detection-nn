@@ -1,2 +1,4 @@
 .history
 *.docx
+cocodataset/annotations/*
+!cocodataset/annotations/.gitkeep
