@@ -43,6 +43,7 @@ for epoch in range(num_epochs):
     
         if (batch_count % 50) == 0:
             save_model(model, saved_model_path)
+        batch_count += 1
     print(f"Epoch {epoch+1}/{num_epochs}, Loss: {total_loss/len(dataloader)}")
     save_model(model, saved_model_path)
     
