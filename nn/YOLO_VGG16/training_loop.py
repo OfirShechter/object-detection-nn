@@ -18,7 +18,7 @@ def training_loop(loader, model, optimizer, loss_fn, scaler, scaled_anchors):
 			y[2].to(device), 
 		) 
 
-		with torch.cuda.amp.autocast(): 
+		with torch.amp.autocast(device_type=device): 
 			# Getting the model predictions 
 			outputs = model(x) 
 			# Calculating the loss at each scale 

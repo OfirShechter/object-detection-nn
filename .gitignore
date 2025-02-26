@@ -6,3 +6,4 @@ nn/cocodataset/annotations/*
 !nn/cocodataset/annotations/.gitkeep
 **/saved_models/*
 !**/saved_models/.gitkeep
+checkpoint.pth.tar
