@@ -6,17 +6,26 @@ import requests
 import cv2
 import numpy as np
 from PIL import Image
+from torchvision import transforms
+
 
 class CocoDetectionByURL(Dataset):
-    def __init__(self, annFile, categories, allow_multiple_obj=False, transform=models.VGG16_Weights.DEFAULT.transforms()):
+    def __init__(self, annFile, categories, allow_multiple_obj=False):
         self.coco = COCO(annFile)
-        self.transform = transform
         self.cat_ids = self.coco.getCatIds(catNms=categories)
         img_ids = self.coco.getImgIds(catIds=self.cat_ids)[:10] # Limit to 16 images for testing
         # fillter images with multiple annotations
         if not allow_multiple_obj:
             self.img_ids = [img_id for img_id in img_ids if len(self.coco.getAnnIds(imgIds=img_id, catIds=self.cat_ids, iscrowd=False)) == 1]
         print(f"ImageIds: {img_ids}")
+        
+        # Define image transformation (Resize + Normalize)
+        image_size = 512
+        self.transform = transforms.Compose([
+            transforms.Resize((image_size, image_size)),  # Resize to match model input
+            transforms.ToTensor(),  # Convert to tensor
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # VGG-16 Normalization
+        ])
 
     def __getitem__(self, index):
         coco = self.coco
@@ -37,7 +46,7 @@ class CocoDetectionByURL(Dataset):
         
         if self.transform is not None:
             img = self.transform(img)
-        print(f"Image shape: {img.shape}")
+
         target = torch.tensor([ann['bbox'] + [1.0] for ann in anns], dtype=torch.float32).squeeze()  # x, y, w, h, confidence
         return img, target
 

@@ -102,3 +102,8 @@ plt.axis('off')
 plt.show()
 
 # %%
+from torchvision import models
+import torch.nn as nn
+vgg16 = models.vgg16_bn(weights=models.VGG16_BN_Weights.DEFAULT)
+nn.Sequential(*list(vgg16.features.children()))
+# %%
