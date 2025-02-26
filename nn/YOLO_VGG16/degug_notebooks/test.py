@@ -89,3 +89,5 @@ for i in range(batch_size):
     plot_image(x[i].permute(1,2,0).detach().cpu(), nms_boxes, id_to_lable)
 
 # %%
+output[1].shape
+# %%

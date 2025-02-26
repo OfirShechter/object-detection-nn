@@ -11,7 +11,7 @@ from nn.YOLO_VGG16 import training_loop
 from nn.YOLO_VGG16.utils.constants import ANCHORS
 from nn.YOLO_VGG16.prepare_data.coco_dataset import CocoDataset
 from nn.YOLO_VGG16.prepare_data.transforms import train_transform
-from nn.YOLO_VGG16.utils.helpers import get_coco_index_lable_map, save_checkpoint
+from nn.YOLO_VGG16.utils.helpers import get_coco_index_lable_map, load_checkpoint, save_checkpoint
 from nn.YOLO_VGG16.utils.constants import device, s, leanring_rate, save_model, epochs, checkpoint_file
 from nn.YOLO_VGG16.model.YOLO_v3 import YOLOv3
 import torch
@@ -21,6 +21,7 @@ from pycocotools.coco import COCO
 from tqdm import tqdm
 
 # Creating the model from YOLOv3 class 
+load_model = True
 model = YOLOv3().to(device) 
 
 # Defining the optimizer 
@@ -31,6 +32,9 @@ loss_fn = YOLOLoss()
 
 # Defining the scaler for mixed precision training 
 scaler = torch.amp.GradScaler(device=device) 
+# Loading the checkpoint 
+if load_model: 
+    load_checkpoint(checkpoint_file, model, optimizer, leanring_rate, device) 
 
 #%%
 coco = COCO('../../cocodataset/annotations/instances_train2017.json')
