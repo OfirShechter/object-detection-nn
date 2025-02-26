@@ -23,11 +23,7 @@ class CocoDataset(Dataset):
 		# Image size 
 		self.image_size = image_size 
 		# Transformations 
-		self.transform = transforms.Compose([
-			transforms.Resize((image_size, image_size)),  # Resize to match model input
-			transforms.ToTensor(),  # Convert to tensor
-			transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # VGG-16 Normalization
-		])
+		self.transform = transform(image_size) if transform is not None else None
 		# Grid sizes for each scale 
 		self.grid_sizes = grid_sizes 
 		# Anchor boxes 
@@ -63,9 +59,9 @@ class CocoDataset(Dataset):
 			raise Exception(f"Failed to download image from {path}")
 
 		if self.transform is not None:
-			img = self.transform(img)
-
-		bboxes = [ann["bbox"] for ann in anns] 
+			augs = self.transform(image=img, bboxes=[ann["bbox"] for ann in anns])
+			img = augs["image"]
+			bboxes = augs["bboxes"]
 
 		# Below assumes 3 scale predictions (as paper) and same num of anchors per scale 
 		# target : [probabilities, x, y, width, height, class_label] 
