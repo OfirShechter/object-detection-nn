@@ -23,7 +23,7 @@ loss_fn = YOLOLoss()
 scaler = torch.amp.GradScaler(device=device) 
 
 #%%
-coco = COCO('../cocodataset/annotations/instances_train2017.json')
+coco = COCO('nn/cocodataset/annotations/instances_train2017.json')
 categories = ["dog"]
 id_to_lable = get_coco_index_lable_map(coco, categories)
 

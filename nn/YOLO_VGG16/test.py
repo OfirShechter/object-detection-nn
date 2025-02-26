@@ -24,7 +24,7 @@ if load_model:
     load_checkpoint(checkpoint_file, model, optimizer, leanring_rate) 
 
 #%%
-coco = COCO('../cocodataset/annotations/instances_val2017.json')
+coco = COCO('nn/cocodataset/annotations/instances_val2017.json')
 categories = ["dog"]
 id_to_lable = get_coco_index_lable_map(coco, categories)
 
