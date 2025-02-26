@@ -24,7 +24,7 @@ class CocoDataset(Dataset):
             catIds=cat_id) for cat_id in self.cat_ids]
         # Flatten the list
         self.img_ids = [item for sublist in self.img_ids for item in sublist]
-        self.img_ids = self.img_ids[:16]  # Limit to 16 images for testing
+        # self.img_ids = self.img_ids[:16]  # Limit to 16 images for testing
 
         # Image size
         self.image_size = image_size
