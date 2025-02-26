@@ -1,11 +1,27 @@
 #%%
+# !git checkout part_2
+#%%
+remote_mode = True
+
 import sys
 import os
 
-# Add the root directory of your project to the PYTHONPATH
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..'))
+if remote_mode:
+    
+    # print working directory and change to another
+    print(f"Current working directory: {os.getcwd()}")
+    # os.chdir('Rar')
+    # os.chdir('object-detection-nn')
+    print(f"Current working directory: {os.getcwd()}")
+
+    # Add the root directory of your project to the PYTHONPATH
+    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ''))
+else:
+    # Add the root directory of your project to the PYTHONPATH
+    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..'))
 print(f"Adding {project_root} to PYTHONPATH")
 sys.path.append(project_root)
+
 
 from nn.YOLO_VGG16 import training_loop
 from nn.YOLO_VGG16.utils.constants import ANCHORS
@@ -20,6 +36,8 @@ from nn.YOLO_VGG16.model.loss import YOLOLoss
 from pycocotools.coco import COCO
 from tqdm import tqdm
 
+
+#%%
 # Creating the model from YOLOv3 class 
 load_model = True
 model = YOLOv3().to(device) 
@@ -64,6 +82,7 @@ scaled_anchors = (
 ).to(device) 
 
 #%%
+epochs = 100
 # Training the model 
 for e in range(1, epochs+1): 
 	print("Epoch:", e) 
