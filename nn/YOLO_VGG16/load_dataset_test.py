@@ -7,8 +7,8 @@ project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')
 print(f"Adding {project_root} to PYTHONPATH")
 sys.path.append(project_root)
 
-from nn.YOLO_VGG16.helpers import convert_cells_to_bboxes, get_coco_index_lable_map, nms, plot_image
-from nn.YOLO_VGG16.constants import ANCHORS
+from nn.YOLO_VGG16.utils.helpers import convert_cells_to_bboxes, get_coco_index_lable_map, nms, plot_image
+from nn.YOLO_VGG16.utils.constants import ANCHORS
 from nn.YOLO_VGG16.coco_dataset import CocoDataset
 from nn.YOLO_VGG16.transforms import test_transform
 import torch
