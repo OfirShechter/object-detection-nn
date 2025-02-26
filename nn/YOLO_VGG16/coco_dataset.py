@@ -2,7 +2,6 @@ import torch
 from torch.utils.data import Dataset
 import pandas as pd
 import os
-from pycocotools.coco import COCO
 from torchvision import transforms
 from .helpers import iou
 import requests
@@ -15,10 +14,10 @@ from PIL import Image
 
 class CocoDataset(Dataset):
     def __init__(
-            self, annotation_file, categories, anchors, transform=None,
+            self, coco_obj, categories, anchors, transform=None,
             image_size=416, grid_sizes=[13, 26, 52]
     ):
-        self.coco = COCO(annotation_file)
+        self.coco = coco_obj
         self.cat_ids = self.coco.getCatIds(catNms=categories)
         # Get image ids for each category- should work with self.coco.getImgIds(catIds=cat_ids), but has a bug
         self.img_ids = [self.coco.getImgIds(

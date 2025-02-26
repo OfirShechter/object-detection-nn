@@ -140,11 +140,9 @@ def convert_cells_to_bboxes(predictions, anchors, s, is_predictions=True):
 	return converted_bboxes.tolist()
 
 # Function to plot images with bounding boxes and class labels 
-def plot_image(image, boxes, class_labels): 
+def plot_image(image, boxes, id_to_label): 
 	# Getting the color map from matplotlib 
 	colour_map = plt.get_cmap("tab20b") 
-	# Getting len(class_labels) different colors from the color map for len(class_labels) different classes 
-	colors = [colour_map(i) for i in np.linspace(0, 1, len(class_labels))] 
 
 	# Reading the image with OpenCV 
 	img = np.array(image) 
@@ -173,7 +171,7 @@ def plot_image(image, boxes, class_labels):
 			box[2] * w, 
 			box[3] * h, 
 			linewidth=2, 
-			edgecolor=colors[int(class_pred)], 
+			edgecolor=colour_map(int(class_pred)), 
 			facecolor="none", 
 		) 
 		
@@ -184,14 +182,18 @@ def plot_image(image, boxes, class_labels):
 		plt.text( 
 			upper_left_x * w, 
 			upper_left_y * h, 
-			s=class_labels[int(class_pred)], 
+			s=id_to_label[int(class_pred)], 
 			color="white", 
 			verticalalignment="top", 
-			bbox={"color": colors[int(class_pred)], "pad": 0}, 
+			bbox={"color": colour_map(int(class_pred)), "pad": 0}, 
 		) 
 
 	# Display the plot 
 	plt.show()
+
+def get_coco_index_lable_map(coco, lables):
+    coco_id_to_name = { coco.getCatIds(catNms=lable)[0]: lable for lable in lables }
+    return coco_id_to_name
 
 # Function to save checkpoint 
 def save_checkpoint(model, optimizer, filename="my_checkpoint.pth.tar"): 
