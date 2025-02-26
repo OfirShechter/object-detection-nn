@@ -9,8 +9,8 @@ sys.path.append(project_root)
 
 from nn.YOLO_VGG16.utils.helpers import convert_cells_to_bboxes, get_coco_index_lable_map, nms, plot_image
 from nn.YOLO_VGG16.utils.constants import ANCHORS
-from nn.YOLO_VGG16.coco_dataset import CocoDataset
-from nn.YOLO_VGG16.transforms import test_transform
+from nn.YOLO_VGG16.prepare_data.coco_dataset import CocoDataset
+from nn.YOLO_VGG16.prepare_data.transforms import test_transform
 import torch
 from pycocotools.coco import COCO
 

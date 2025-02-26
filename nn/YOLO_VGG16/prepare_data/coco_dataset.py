@@ -1,6 +1,6 @@
 import torch
 from torch.utils.data import Dataset
-from .utils.helpers import iou
+from ..utils.helpers import iou
 import requests
 import cv2
 import numpy as np
