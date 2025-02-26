@@ -27,9 +27,9 @@ train_transform = lambda image_size: A.Compose(
 	], 
 	# Augmentation for bounding boxes 
 	bbox_params=A.BboxParams( 
-					format="yolo", 
+					format="coco", 
 					min_visibility=0.4, 
-					label_fields=[] 
+					label_fields=['category_ids'] 
 				) 
 ) 
 
@@ -51,8 +51,8 @@ test_transform = lambda image_size: A.Compose(
 	], 
 	# Augmentation for bounding boxes 
 	bbox_params=A.BboxParams( 
-					format="yolo", 
+					format="coco", 
 					min_visibility=0.4, 
-					label_fields=[] 
+					label_fields=['category_ids'] 
 				) 
 )
