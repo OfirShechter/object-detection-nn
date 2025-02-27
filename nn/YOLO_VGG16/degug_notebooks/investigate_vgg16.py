@@ -14,3 +14,5 @@ vgg16.features[24:34]
 vgg16.features[34:]
 
 # %%
+list(vgg16.features.children())
+# %%

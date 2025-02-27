@@ -58,6 +58,7 @@ class YOLOv3(nn.Module):
 
 		for layer in self.layers: 
 			if isinstance(layer, ScalePrediction): 
+				print("x shape ScalePrediction:", x.shape)
 				outputs.append(layer(x)) 
 				continue
 			x = layer(x) 
@@ -66,6 +67,8 @@ class YOLOv3(nn.Module):
 				route_connections.append(x) 
 			
 			elif isinstance(layer, nn.Upsample): 
+				print("x shape:", x.shape)
+				print("route shape:", route_connections[-1].shape)
 				x = torch.cat([x, route_connections[-1]], dim=1) 
 				route_connections.pop() 
 		return outputs
