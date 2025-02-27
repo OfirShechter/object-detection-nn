@@ -1,4 +1,5 @@
 #%%
+# !git pull
 # !git checkout part_2
 # !pwd
 #%%
@@ -12,7 +13,7 @@ if remote_mode:
     # print working directory and change to another
     print(f"Current working directory: {os.getcwd()}")
     # os.chdir('Rar')
-    os.chdir('object-detection-nn')
+    # os.chdir('object-detection-nn')
     print(f"Current working directory: {os.getcwd()}")
 
     # Add the root directory of your project to the PYTHONPATH
@@ -48,9 +49,14 @@ else:
     coco_path = '../../cocodataset/annotations/instances_train2017.json'
 
 #%%
+coco = COCO(coco_path)
+categories = ["dog"]
+id_to_lable = get_coco_index_lable_map(coco, categories)
+
+#%%
 # Creating the model from YOLOv3 class 
 load_model = False
-model = YOLO_VGG16().to(device) 
+model = YOLO_VGG16(num_classes=len(categories)).to(device) 
 
 # Defining the optimizer 
 optimizer = optim.Adam(model.parameters(), lr = leanring_rate) 
@@ -67,10 +73,6 @@ if load_model:
 # Initialize TensorBoard writer
 writer = SummaryWriter(log_dir='runs/YOLO_VGG16')
 
-#%%
-coco = COCO(coco_path)
-categories = ["dog"]
-id_to_lable = get_coco_index_lable_map(coco, categories)
 
 #%%
 dataset = CocoDataset( 
@@ -114,10 +116,12 @@ for e in range(1, epochs+1):
 			y[1].to(device), 
 			y[2].to(device), 
 		) 
+		print(f"target shape: {y0.shape}, {y1.shape}, {y2.shape}")
 
 		with torch.amp.autocast(device_type=device): 
 			# Getting the model predictions 
 			outputs = model(x) 
+			print(f"output shape: {outputs[0].shape}, {outputs[1].shape}, {outputs[2].shape}")
 			# Calculating the loss at each scale 
 			loss = ( 
 				loss_fn(outputs[0], y0, scaled_anchors[0]) 
@@ -166,12 +170,12 @@ for e in range(1, epochs+1):
 					writer.add_image(f'Train/Image_{e}_{batch_idx}', img_with_boxes, e * len(train_loader) + batch_idx)
 			model.train()
    
-		# Saving the model 
-		if save_model: 
-			save_checkpoint(model, optimizer, filename=model_path_base +f"{batch_idx}_vgg16_checkpoint.pth.tar")
-			# delete checkpoint of previous 2 batch_idx if exists
-			if batch_idx >= 200:
-				os.remove(model_path_base + f"{batch_idx-200}_vgg16_checkpoint.pth.tar")
+	# Saving the model 
+	if save_model: 
+		save_checkpoint(model, optimizer, filename=model_path_base +f"{e}_vgg16_checkpoint.pth.tar")
+		# delete checkpoint of previous 2 batch_idx if exists
+		if e >= 2:
+			os.remove(model_path_base + f"{e}_vgg16_checkpoint.pth.tar")
 
 
     #################

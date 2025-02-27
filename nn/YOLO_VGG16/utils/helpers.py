@@ -148,7 +148,7 @@ def convert_cells_to_bboxes(predictions, anchors, s, is_predictions=True):
 # Function to plot images with bounding boxes and class labels
 
 
-def plot_image(image, boxes, id_to_label):
+def plot_image(image, boxes, lables):
     # Getting the color map from matplotlib
     colour_map = plt.get_cmap("tab20b")
 
@@ -190,7 +190,7 @@ def plot_image(image, boxes, id_to_label):
         plt.text(
             upper_left_x * w,
             upper_left_y * h - 15,
-            s=id_to_label[int(class_pred)],
+            s=lables[int(class_pred)],
             color="white",
             verticalalignment="top",
             bbox={"color": colour_map(int(class_pred)), "pad": 0},
