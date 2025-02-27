@@ -198,6 +198,8 @@ def plot_image(image, boxes, id_to_label):
 
     # Display the plot
     plt.show()
+    # return the displayed image
+    return img
 
 
 def get_coco_index_lable_map(coco, lables):

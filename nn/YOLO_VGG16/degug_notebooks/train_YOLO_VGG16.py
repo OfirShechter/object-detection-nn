@@ -41,10 +41,10 @@ from torch.utils.tensorboard import SummaryWriter
 import torchvision.transforms as T
 
 if remote_mode:
-    model_path = f"/home/dcor/niskhizov/Rar/object-detection-nn/nn/YOLO_VGG16/degug_notebooks/vgg16_{checkpoint_file}"
+    model_path_base = f"/home/dcor/niskhizov/Rar/object-detection-nn/nn/YOLO_VGG16/degug_notebooks/"
     coco_path = '/home/dcor/niskhizov/Rar/object-detection-nn/nn/YOLO_VGG16/degug_notebooks/temp/instances_train2017.json'
 else:
-    model_path = f"vgg16_{checkpoint_file}"
+    model_path_base = f""
     coco_path = '../../cocodataset/annotations/instances_train2017.json'
 
 #%%
@@ -62,7 +62,7 @@ loss_fn = YOLOLoss()
 scaler = torch.amp.GradScaler(device=device) 
 # Loading the checkpoint 
 if load_model: 
-    load_checkpoint(model_path, model, optimizer, leanring_rate, device) 
+    load_checkpoint(model_path_base + f"vgg16_{checkpoint_file}", model, optimizer, leanring_rate, device) 
 
 # Initialize TensorBoard writer
 writer = SummaryWriter(log_dir='runs/YOLO_VGG16')
@@ -168,7 +168,10 @@ for e in range(1, epochs+1):
    
 		# Saving the model 
 		if save_model: 
-			save_checkpoint(model, optimizer, filename=f"{batch_idx}_vgg16_checkpoint.pth.tar")
+			save_checkpoint(model, optimizer, filename=model_path_base +f"{batch_idx}_vgg16_checkpoint.pth.tar")
+			# delete checkpoint of previous 2 batch_idx if exists
+			if batch_idx >= 200:
+				os.remove(model_path_base + f"{batch_idx-200}_vgg16_checkpoint.pth.tar")
 
 
     #################
