@@ -22,7 +22,7 @@ class CocoDataset(Dataset):
         self.cat_ids_map = {cat_id: i for i, cat_id in enumerate(self.cat_ids)}
         # Flatten the list
         self.img_ids = [item for sublist in self.img_ids for item in sublist]
-        self.img_ids = self.img_ids[:16]  # Limit to 16 images for testing
+        # self.img_ids = self.img_ids[:16]  # Limit to 16 images for testing
 
         # Image size
         self.image_size = image_size
@@ -82,7 +82,7 @@ class CocoDataset(Dataset):
                   for x, y, w, h, label in bboxes]
 
         # Convert COCO bbox format (x, y, width, height) to (center_x, center_y, width, height)- and lable to lable_by_location
-        bboxes = [[x + w / 2, y + h / 2, w, h, self.cat_ids_map(label)] for x, y, w, h, label in bboxes]
+        bboxes = [[x + w / 2, y + h / 2, w, h, self.cat_ids_map[label]] for x, y, w, h, label in bboxes]
         
         # Below assumes 3 scale predictions (as paper) and same num of anchors per scale
         # target : [probabilities, x, y, width, height, class_label]

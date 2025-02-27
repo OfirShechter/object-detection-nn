@@ -3,7 +3,7 @@
 # !git checkout part_2
 # !pwd
 #%%
-remote_mode = True
+remote_mode = False
 
 import sys
 import os
@@ -13,7 +13,7 @@ if remote_mode:
     # print working directory and change to another
     print(f"Current working directory: {os.getcwd()}")
     # os.chdir('Rar')
-    # os.chdir('object-detection-nn')
+    os.chdir('object-detection-nn')
     print(f"Current working directory: {os.getcwd()}")
 
     # Add the root directory of your project to the PYTHONPATH
@@ -95,7 +95,6 @@ scaled_anchors = (
 	torch.tensor(ANCHORS) *
 	torch.tensor(s).unsqueeze(1).unsqueeze(1).repeat(1,3,2) 
 ).to(device) 
-
 #%%
 epochs = 10
 # Training the model 
@@ -116,12 +115,10 @@ for e in range(1, epochs+1):
 			y[1].to(device), 
 			y[2].to(device), 
 		) 
-		print(f"target shape: {y0.shape}, {y1.shape}, {y2.shape}")
 
 		with torch.amp.autocast(device_type=device): 
 			# Getting the model predictions 
 			outputs = model(x) 
-			print(f"output shape: {outputs[0].shape}, {outputs[1].shape}, {outputs[2].shape}")
 			# Calculating the loss at each scale 
 			loss = ( 
 				loss_fn(outputs[0], y0, scaled_anchors[0]) 
@@ -182,4 +179,5 @@ for e in range(1, epochs+1):
 	# training_loop(train_loader, model, optimizer, loss_fn, scaler, scaled_anchors) 
 
 
+# %%
 # %%
