@@ -1,5 +1,6 @@
 #%%
 # !git checkout part_2
+# !pwd
 #%%
 remote_mode = True
 
@@ -36,7 +37,6 @@ from nn.YOLO_VGG16.model.loss import YOLOLoss
 from pycocotools.coco import COCO
 from tqdm import tqdm
 
-
 #%%
 # Creating the model from YOLOv3 class 
 load_model = True
@@ -50,12 +50,13 @@ loss_fn = YOLOLoss()
 
 # Defining the scaler for mixed precision training 
 scaler = torch.amp.GradScaler(device=device) 
+model_path = f"/home/dcor/niskhizov/Rar/object-detection-nn/nn/YOLO_VGG16/degug_notebooks/{checkpoint_file}"
 # Loading the checkpoint 
 if load_model: 
-    load_checkpoint(checkpoint_file, model, optimizer, leanring_rate, device) 
+    load_checkpoint(model_path, model, optimizer, leanring_rate, device) 
 
 #%%
-coco = COCO('../../cocodataset/annotations/instances_train2017.json')
+coco = COCO('/home/dcor/niskhizov/Rar/object-detection-nn/nn/YOLO_VGG16/degug_notebooks/temp/instances_train2017.json')
 categories = ["dog"]
 id_to_lable = get_coco_index_lable_map(coco, categories)
 
@@ -82,11 +83,11 @@ scaled_anchors = (
 ).to(device) 
 
 #%%
-epochs = 100
+epochs = 1000000000000000000000
 # Training the model 
 for e in range(1, epochs+1): 
 	print("Epoch:", e) 
-    ################# 
+    ################# dos
     	# Creating a progress bar 
 	progress_bar = tqdm(train_loader, leave=True) 
 
@@ -136,6 +137,6 @@ for e in range(1, epochs+1):
 
 	# Saving the model 
 	if save_model: 
-		save_checkpoint(model, optimizer, filename=checkpoint_file)
+		save_checkpoint(model, optimizer, filename=model_path)
 
 # %%
