@@ -12,6 +12,7 @@ class YOLOv3(nn.Module):
 
 		# Layers list for YOLOv3 
 		self.layers = nn.ModuleList([ 
+            # feature extractor
 			CNNBlock(in_channels, 32, kernel_size=3, stride=1, padding=1), 
 			CNNBlock(32, 64, kernel_size=3, stride=2, padding=1), 
 			ResidualBlock(64, num_repeats=1), 
@@ -23,11 +24,15 @@ class YOLOv3(nn.Module):
 			ResidualBlock(512, num_repeats=8), 
 			CNNBlock(512, 1024, kernel_size=3, stride=2, padding=1), 
 			ResidualBlock(1024, num_repeats=4), 
-			CNNBlock(1024, 512, kernel_size=1, stride=1, padding=0), 
+   
+			# large objects detection
+   			CNNBlock(1024, 512, kernel_size=1, stride=1, padding=0), 
 			CNNBlock(512, 1024, kernel_size=3, stride=1, padding=1), 
 			ResidualBlock(1024, use_residual=False, num_repeats=1), 
 			CNNBlock(1024, 512, kernel_size=1, stride=1, padding=0), 
 			ScalePrediction(512, num_classes=num_classes), 
+   
+			# medium objects detection
 			CNNBlock(512, 256, kernel_size=1, stride=1, padding=0), 
 			nn.Upsample(scale_factor=2), 
 			CNNBlock(768, 256, kernel_size=1, stride=1, padding=0), 
@@ -35,6 +40,8 @@ class YOLOv3(nn.Module):
 			ResidualBlock(512, use_residual=False, num_repeats=1), 
 			CNNBlock(512, 256, kernel_size=1, stride=1, padding=0), 
 			ScalePrediction(256, num_classes=num_classes), 
+   
+			# small objects detection
 			CNNBlock(256, 128, kernel_size=1, stride=1, padding=0), 
 			nn.Upsample(scale_factor=2), 
 			CNNBlock(384, 128, kernel_size=1, stride=1, padding=0), 
