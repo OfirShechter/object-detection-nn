@@ -1,3 +1,4 @@
+import cv2
 import torch
 import matplotlib.pyplot as plt
 import numpy as np
@@ -148,58 +149,49 @@ def convert_cells_to_bboxes(predictions, anchors, s, is_predictions=True):
 # Function to plot images with bounding boxes and class labels
 
 
-def plot_image(image, boxes, lables):
+def plot_image(image, boxes, labels):
     # Getting the color map from matplotlib
     colour_map = plt.get_cmap("tab20b")
 
-    # Reading the image with OpenCV
+    # Convert image to NumPy array (if not already)
     img = np.array(image)
-    # Getting the height and width of the image
     h, w, _ = img.shape
 
-    # Create figure and axes
-    fig, ax = plt.subplots(1)
+    # Copy the image to avoid modifying the original
+    img_drawn = img.copy()
 
-    # Add image to plot
-    ax.imshow(img)
+    # Define a function to convert colormap to BGR (OpenCV uses BGR instead of RGB)
+    def get_color(index):
+        color = colour_map(index)[:3]  # Get RGB from colormap
+        return tuple(int(c * 255) for c in color[::-1])  # Convert to BGR (OpenCV format)
 
-    # Plotting the bounding boxes and labels over the image
+    # Plot bounding boxes and labels
     for box in boxes:
-        # Get the class from the box
-        class_pred = box[0]
-        # Get the center x and y coordinates
+        class_pred = int(box[0])
         box = box[2:]
-        # Get the upper left corner coordinates
-        upper_left_x = box[0] - box[2] / 2
-        upper_left_y = box[1] - box[3] / 2
+        upper_left_x = int((box[0] - box[2] / 2) * w)
+        upper_left_y = int((box[1] - box[3] / 2) * h)
+        lower_right_x = int((box[0] + box[2] / 2) * w)
+        lower_right_y = int((box[1] + box[3] / 2) * h)
 
-        # Create a Rectangle patch with the bounding box
-        rect = patches.Rectangle(
-            (upper_left_x * w, upper_left_y * h),
-            box[2] * w,
-            box[3] * h,
-            linewidth=2,
-            edgecolor=colour_map(int(class_pred)),
-            facecolor="none",
-        )
+        # Get color
+        color = get_color(class_pred)
 
-        # Add the patch to the Axes
-        ax.add_patch(rect)
+        # Draw rectangle on image
+        cv2.rectangle(img_drawn, (upper_left_x, upper_left_y), (lower_right_x, lower_right_y), color, 2)
 
-        # Add class name to the patch
-        plt.text(
-            upper_left_x * w,
-            upper_left_y * h - 15,
-            s=lables[int(class_pred)],
-            color="white",
-            verticalalignment="top",
-            bbox={"color": colour_map(int(class_pred)), "pad": 0},
-        )
+        # Put label text
+        label = labels[class_pred]
+        cv2.putText(img_drawn, label, (upper_left_x, upper_left_y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
-    # Display the plot
+    # Display the image
+    plt.figure(figsize=(8, 6))
+    plt.imshow(cv2.cvtColor(img_drawn, cv2.COLOR_BGR2RGB))  # Convert BGR to RGB for correct color display
+    plt.axis("off")
     plt.show()
-    # return the displayed image
-    return img
+
+    return img_drawn  # Return the modified image with drawn bounding boxes
+
 
 
 def get_coco_index_lable_map(coco, lables):

@@ -18,9 +18,9 @@ import torch.optim as optim
 from nn.YOLO_VGG16.model.loss import YOLOLoss
 from pycocotools.coco import COCO
 #%%
-f"vgg16_{checkpoint_file}"
-if not os.path.exists(f"vgg16_{checkpoint_file}"):
-    raise FileNotFoundError(f"vgg16_{checkpoint_file} not found")
+model = f"e3_vgg16_{checkpoint_file}"
+if not os.path.exists(model):
+    raise FileNotFoundError(f"{model} not found")
 #%%
 # Setting the load_model to True 
 load_model = True

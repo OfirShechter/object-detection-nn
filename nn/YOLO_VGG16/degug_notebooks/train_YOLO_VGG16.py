@@ -3,7 +3,7 @@
 # !git checkout part_2
 # !pwd
 #%%
-remote_mode = False
+remote_mode = True
 
 import sys
 import os
@@ -51,11 +51,10 @@ else:
 #%%
 coco = COCO(coco_path)
 categories = ["dog"]
-id_to_lable = get_coco_index_lable_map(coco, categories)
 
 #%%
 # Creating the model from YOLOv3 class 
-load_model = False
+load_model = True
 model = YOLO_VGG16(num_classes=len(categories)).to(device) 
 
 # Defining the optimizer 
@@ -68,7 +67,7 @@ loss_fn = YOLOLoss()
 scaler = torch.amp.GradScaler(device=device) 
 # Loading the checkpoint 
 if load_model: 
-    load_checkpoint(model_path_base + f"vgg16_{checkpoint_file}", model, optimizer, leanring_rate, device) 
+    load_checkpoint(model_path_base + f"e1_vgg16_{checkpoint_file}", model, optimizer, leanring_rate, device) 
 
 # Initialize TensorBoard writer
 writer = SummaryWriter(log_dir='runs/YOLO_VGG16')
@@ -86,7 +85,7 @@ dataset = CocoDataset(
 # Defining the train data loader 
 train_loader = torch.utils.data.DataLoader( 
 	dataset=dataset, 
-	batch_size=1, 
+	batch_size=8, 
 	shuffle=True, 
 ) 
 
@@ -96,9 +95,9 @@ scaled_anchors = (
 	torch.tensor(s).unsqueeze(1).unsqueeze(1).repeat(1,3,2) 
 ).to(device) 
 #%%
-epochs = 10
+epochs = 1000
 # Training the model 
-for e in range(1, epochs+1): 
+for e in range(11, epochs+1): 
 	print("Epoch:", e) 
     ################# dos
     	# Creating a progress bar 
@@ -109,6 +108,7 @@ for e in range(1, epochs+1):
 
 	# Iterating over the training data 
 	for batch_idx, (x, y) in enumerate(progress_bar): 
+		print("batch_idx:", batch_idx)
 		x = x.to(device) 
 		y0, y1, y2 = ( 
 			y[0].to(device), 
@@ -149,30 +149,36 @@ for e in range(1, epochs+1):
 		writer.add_scalar('Loss/train', mean_loss, e * len(train_loader) + batch_idx)
 
 		# Log images to TensorBoard every 100 batches
-		if batch_idx % 100 == 0:
-			model.eval()
-			with torch.no_grad():
-				output = model(x)
-				bboxes = [[] for _ in range(x.shape[0])]
-				for i in range(3):
-					batch_size, A, S, _, _ = output[i].shape
-					anchor = scaled_anchors[i]
-					boxes_scale_i = convert_cells_to_bboxes(output[i], anchor, s=S, is_predictions=True)
-					for idx, box in enumerate(boxes_scale_i):
-						bboxes[idx] += box
-				for i in range(batch_size):
-					nms_boxes = nms(bboxes[i], iou_threshold=0.5, threshold=0.6)
-					img_with_boxes = plot_image(x[i].permute(1, 2, 0).detach().cpu(), nms_boxes, id_to_lable)
-					img_with_boxes = T.ToTensor()(img_with_boxes)
-					writer.add_image(f'Train/Image_{e}_{batch_idx}', img_with_boxes, e * len(train_loader) + batch_idx)
-			model.train()
+		if batch_idx % 50 == 0:
+			# Saving the model 
+			if save_model: 
+				save_checkpoint(model, optimizer, filename=model_path_base +f"b{batch_idx}_vgg16_checkpoint.pth.tar")
+
    
 	# Saving the model 
 	if save_model: 
-		save_checkpoint(model, optimizer, filename=model_path_base +f"{e}_vgg16_checkpoint.pth.tar")
-		# delete checkpoint of previous 2 batch_idx if exists
-		if e >= 2:
-			os.remove(model_path_base + f"{e}_vgg16_checkpoint.pth.tar")
+		save_checkpoint(model, optimizer, filename=model_path_base +f"e{e}_vgg16_checkpoint.pth.tar")
+        # delete batch checkpoints
+		for i in range(0, batch_idx+1, 50):
+			os.remove(model_path_base + f"b{i}_vgg16_checkpoint.pth.tar")
+   
+	model.eval()
+	print("display and report image")
+	with torch.no_grad():
+		output = model(x)
+		bboxes = [[] for _ in range(x.shape[0])]
+		for i in range(3):
+			batch_size, A, S, _, _ = output[i].shape
+			anchor = scaled_anchors[i]
+			boxes_scale_i = convert_cells_to_bboxes(output[i], anchor, s=S, is_predictions=True)
+			for idx, box in enumerate(boxes_scale_i):
+				bboxes[idx] += box
+		i = 0
+		nms_boxes = nms(bboxes[i], iou_threshold=0.5, threshold=0.6)
+		img_with_boxes = plot_image(x[i].permute(1, 2, 0).detach().cpu(), nms_boxes, categories)
+		img_with_boxes = T.ToTensor()(img_with_boxes)
+		writer.add_image(f'Train/Image_{e}_{i}_before', img_with_boxes, e * len(train_loader) + batch_idx)
+	model.train()
 
 
     #################
