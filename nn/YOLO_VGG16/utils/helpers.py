@@ -160,11 +160,6 @@ def plot_image(image, boxes, labels):
     # Copy the image to avoid modifying the original
     img_drawn = img.copy()
 
-    # Define a function to convert colormap to BGR (OpenCV uses BGR instead of RGB)
-    def get_color(index):
-        color = colour_map(index)[:3]  # Get RGB from colormap
-        return tuple(int(c * 255) for c in color[::-1])  # Convert to BGR (OpenCV format)
-
     # Plot bounding boxes and labels
     for box in boxes:
         class_pred = int(box[0])
@@ -175,23 +170,28 @@ def plot_image(image, boxes, labels):
         lower_right_y = int((box[1] + box[3] / 2) * h)
 
         # Get color
-        color = get_color(class_pred)
+        color = colour_map(class_pred)
 
         # Draw rectangle on image
-        cv2.rectangle(img_drawn, (upper_left_x, upper_left_y), (lower_right_x, lower_right_y), color, 2)
+        cv2.rectangle(img_drawn, (upper_left_x, upper_left_y),
+                      (lower_right_x, lower_right_y), color, 2)
 
         # Put label text
         label = labels[class_pred]
-        cv2.putText(img_drawn, label, (upper_left_x, upper_left_y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+        (text_width, text_height), baseline = cv2.getTextSize(
+            label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 2)
+        cv2.rectangle(img_drawn, (upper_left_x, upper_left_y - text_height - 10),
+                      (upper_left_x + text_width, upper_left_y), color, -1)
+        cv2.putText(img_drawn, label, (upper_left_x, upper_left_y - 10),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
 
     # Display the image
     plt.figure(figsize=(8, 6))
-    plt.imshow(cv2.cvtColor(img_drawn, cv2.COLOR_BGR2RGB))  # Convert BGR to RGB for correct color display
+    plt.imshow(img_drawn)  # Convert BGR to RGB for correct color display
     plt.axis("off")
     plt.show()
 
     return img_drawn  # Return the modified image with drawn bounding boxes
-
 
 
 def get_coco_index_lable_map(coco, lables):
