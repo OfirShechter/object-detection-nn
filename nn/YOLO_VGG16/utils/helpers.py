@@ -66,15 +66,16 @@ def iou(box1, box2, is_pred=True):
 
 
 def nms(bboxes, iou_threshold, threshold):
-    # Filter out bounding boxes with confidence below the threshold.
-    bboxes = [box for box in bboxes if box[1] > threshold]
-
     # Sort the bounding boxes by confidence in descending order.
     bboxes = sorted(bboxes, key=lambda x: x[1], reverse=True)
 
     # Initialize the list of bounding boxes after non-maximum suppression.
     first_box = bboxes.pop(0)
     bboxes_nms = [first_box]
+    
+    # Filter out bounding boxes with confidence below the threshold.
+    bboxes = [box for box in bboxes if box[1] > threshold]
+
     while len(bboxes) >= 0:
         # Iterate over the remaining bounding boxes.
         for box in bboxes:
