@@ -73,12 +73,9 @@ def nms(bboxes, iou_threshold, threshold):
     bboxes = sorted(bboxes, key=lambda x: x[1], reverse=True)
 
     # Initialize the list of bounding boxes after non-maximum suppression.
-    bboxes_nms = []
-
-    while bboxes:
-        # Get the first bounding box.
-        first_box = bboxes.pop(0)
-
+    first_box = bboxes.pop(0)
+    bboxes_nms = [first_box]
+    while len(bboxes) >= 0:
         # Iterate over the remaining bounding boxes.
         for box in bboxes:
             # If the bounding boxes do not overlap or if the first bounding box has
@@ -92,6 +89,10 @@ def nms(bboxes, iou_threshold, threshold):
                 if box not in bboxes_nms:
                     # Add box to bboxes_nms
                     bboxes_nms.append(box)
+                    
+        # Get the first bounding box.
+        first_box = bboxes.pop(0) if len(bboxes) > 0 else None
+                
 
     # Return bounding boxes after non-maximum suppression.
     return bboxes_nms
