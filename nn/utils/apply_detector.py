@@ -5,11 +5,11 @@ import numpy as np
 from .frames_helpers import FrameHelpers
 import time
 
-def apply_lane_detection(frames, object_class_detector, batch_size = 1, show_frames=False):
+def apply_objects_detection(frames, detector, batch_size = 1, show_frames=False):
     result_frames = []  # Buffer to store all processed frames
     frame_index = 0 # Current frame index
     while frame_index < len(frames):
-        processed_frames = object_class_detector.plot_marked_images(
+        processed_frames = detector.plot_marked_images(
             frames[frame_index:batch_size].copy())
 
         if show_frames:
