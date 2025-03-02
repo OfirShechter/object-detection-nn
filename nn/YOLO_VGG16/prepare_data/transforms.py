@@ -56,3 +56,20 @@ test_transform = lambda image_size: A.Compose(
 					label_fields=['category_ids'] 
 				) 
 )
+
+execute_transform = lambda image_size: A.Compose( 
+	[ 
+		# Rescale an image so that maximum side is equal to image_size 
+		A.LongestMaxSize(max_size=image_size), 
+		# Pad remaining areas with zeros 
+		A.PadIfNeeded( 
+			min_height=image_size, min_width=image_size, border_mode=cv2.BORDER_CONSTANT 
+		), 
+		# Normalize the image 
+		A.Normalize( 
+			mean=[0, 0, 0], std=[1, 1, 1], max_pixel_value=255
+		), 
+		# Convert the image to PyTorch tensor 
+		ToTensorV2() 
+	], 
+)
