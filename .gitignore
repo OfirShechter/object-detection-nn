@@ -8,3 +8,4 @@ nn/cocodataset/annotations/*
 !**/saved_models/.gitkeep
 *checkpoint.pth.tar
 runs/
+**/video/*
