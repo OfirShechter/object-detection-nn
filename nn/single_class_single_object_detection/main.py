@@ -1,4 +1,10 @@
 #%%
+import os
+os.chdir('object-detection-nn')
+
+#%%
+# !git pull
+#%%
 import sys
 import os
 
@@ -19,12 +25,21 @@ import cv2
 from PIL import Image
 from nn.YOLO_VGG16.prepare_data.transforms import execute_transform
 import torch
-#%%
-video_path = './video/dog_video_1.mp4'
-frame_new_size = (image_size, image_size)
-video, frames = FrameHelpers.get_video_and_frames(video_path, frame_new_size)
 
-model_path = f"./saved_models/vgg_f_modele32_vgg16_checkpoint.pth.tar"
+#%%
+remote = False
+
+if remote:
+    base_path = '/home/dcor/niskhizov/Rar/object-detection-nn/nn'
+else:
+    base_path = '..'
+#%%
+video_path = f'{base_path}/single_class_single_object_detection/video/dog_video_1.mp4'
+frame_new_size = (image_size, image_size)
+video, frames = FrameHelpers.get_video_and_frames(video_path)
+#%%
+# model_path = f"{base_path}/YOLO_VGG16/degug_notebooks/vgg_f_modele32_vgg16_checkpoint.pth.tar"
+model_path = f"{base_path}/single_class_single_object_detection/saved_models/vgg_f_modele32_vgg16_checkpoint.pth.tar"
 object_class_detector = Object_Class_Detector(model_path)
 
 #%%

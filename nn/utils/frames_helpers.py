@@ -4,7 +4,7 @@ import cv2
 
 class FrameHelpers:
     @staticmethod
-    def get_video_and_frames(video_path, new_size):
+    def get_video_and_frames(video_path):
         """
         Get all frames from a video.
 
@@ -17,11 +17,10 @@ class FrameHelpers:
         success, frame = video.read()
         print("video was found:", success)
         while success:
-            frame = cv2.resize(frame, new_size)
             frames.append(frame)
             success, frame = video.read()
         return video, frames
-    
+
     @staticmethod
     def get_video_writer(output_video_path, video_capture, frame_size):
         """
@@ -33,6 +32,6 @@ class FrameHelpers:
         :return: The video writer object
         """
         frame_rate = video_capture.get(
-        cv2.CAP_PROP_FPS)
+            cv2.CAP_PROP_FPS)
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
         return cv2.VideoWriter(output_video_path, fourcc, frame_rate, frame_size)
