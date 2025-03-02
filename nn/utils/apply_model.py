@@ -5,8 +5,8 @@ import numpy as np
 from .frames_helpers import FrameHelpers
 import time
 
-def apply_lane_detection(frames, object_class_detector, batch_size = 1, show_frames=False, save_output=False):
-    processed_frames = []  # Buffer to store all processed frames
+def apply_lane_detection(frames, object_class_detector, batch_size = 1, show_frames=False):
+    result_frames = []  # Buffer to store all processed frames
     frame_index = 0 # Current frame index
     while frame_index < len(frames):
         processed_frames = object_class_detector.plot_marked_images(
@@ -32,9 +32,9 @@ def apply_lane_detection(frames, object_class_detector, batch_size = 1, show_fra
         # Press Q on keyboard to exit
         if cv2.waitKey(10) & 0xFF == ord('q'):
             break
-        processed_frames.append(processed_frame)
+        result_frames.extend(processed_frames)
         # print("index frame:", frame_index)
-        frame_index += 1
+        frame_index += batch_size
 
     # Release everything if job is finished
     cv2.destroyAllWindows()
