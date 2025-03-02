@@ -1,51 +1,40 @@
 #%%
 import os
-os.chdir('object-detection-nn')
 
-#%%
-# !git pull
-#%%
-import sys
-import os
-
-# Add the root directory of your project to the PYTHONPATH
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
-print(f"Adding {project_root} to PYTHONPATH")
-sys.path.append(project_root)
-
-import numpy as np
-
-from nn.single_class_single_object_detection.object_class_detector import Object_Class_Detector
-
-from nn.utils.apply_detector import apply_objects_detection
-from nn.YOLO_VGG16.utils.helpers import convert_cells_to_bboxes, nms, plot_image
-from nn.utils.frames_helpers import FrameHelpers
-from nn.YOLO_VGG16.utils.constants import ANCHORS, image_size, device, s
-import cv2
-from PIL import Image
-from nn.YOLO_VGG16.prepare_data.transforms import execute_transform
-import torch
-
-#%%
 remote = False
 
 if remote:
     base_path = '/home/dcor/niskhizov/Rar/object-detection-nn/nn'
+    os.chdir('object-detection-nn')
 else:
-    base_path = '..'
+    base_path = 'nn'
+    os.chdir('../..')
+
+#%%
+# !git pull
+
+#%%
+import numpy as np
+
+from nn.single_class_single_object_detection.object_class_detector import Object_Class_Detector
+from nn.utils.frames_helpers import FrameHelpers
+from nn.YOLO_VGG16.utils.constants import image_size
+import matplotlib.pyplot as plt
+import cv2
 #%%
 video_path = f'{base_path}/single_class_single_object_detection/video/dog_video_1.mp4'
 frame_new_size = (image_size, image_size)
 video, frames = FrameHelpers.get_video_and_frames(video_path)
 #%%
-# model_path = f"{base_path}/YOLO_VGG16/degug_notebooks/vgg_f_modele32_vgg16_checkpoint.pth.tar"
+model_path = f"{base_path}/YOLO_VGG16/degug_notebooks/vgg_f_modele32_vgg16_checkpoint.pth.tar"
 model_path = f"{base_path}/single_class_single_object_detection/saved_models/vgg_f_modele32_vgg16_checkpoint.pth.tar"
 object_class_detector = Object_Class_Detector(model_path)
-
+#%%
+len(frames)
 #%%
 batch_size = 2
 result_frames = []  # Buffer to store all processed frames
-frame_index = 0 # Current frame index
+frame_index = 2100 # Current frame index
 while frame_index < len(frames):
     processed_frames = object_class_detector.plot_marked_images(
         frames[frame_index:frame_index+batch_size].copy())
@@ -53,15 +42,23 @@ while frame_index < len(frames):
     # print("index frame:", frame_index)
     frame_index += batch_size
 #%%
-# frames, processed_frames = apply_objects_detection(frames, object_class_detector, batch_size=2, show_frames=False)
+# write all frames to video
+output_path = f'{base_path}/dog_detection.avi'
+frame_rate = 30
+fourcc = cv2.VideoWriter_fourcc(*'XVID')
+writer = cv2.VideoWriter(output_path, fourcc, frame_rate, frame_new_size)
 
-#%%
-# save results to video
-output_path = 'result_videos/single_dog_detection.avi'
-video_output_writer = FrameHelpers.get_video_writer(output_path, video, frame_new_size)
-for frame in processed_frames:
-    video_output_writer.write(frame.astype(np.uint8))
-
-video.release()
-video_output_writer.release()
+for frame in result_frames:
+    frame = (frame * 255).astype(np.uint8)
+    frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+    writer.write(frame)
+writer.release()
+# %%
+np.array(result_frames).shape
+# %%
+import matplotlib.pyplot as plt
+plt.imshow(result_frames[15])
+plt.show()
+# %%
+np.max(result_frames[15].astype(np.uint8))
 # %%
