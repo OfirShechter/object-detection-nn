@@ -1,7 +1,7 @@
 #%%
 import os
 
-remote = True
+remote = False
 
 if remote:
     base_path = '/home/dcor/niskhizov/Rar/object-detection-nn/nn'
@@ -16,19 +16,19 @@ else:
 #%%
 import numpy as np
 
-from nn.single_class_single_object_detection.object_class_detector import Object_Class_Detector
+from nn.single_class_multiple_object_detection.object_class_detector import Object_Class_Detector
 from nn.utils.frames_helpers import FrameHelpers
-from nn.YOLO_VGG16.utils.constants import image_size
+from nn.single_class_multiple_object_detection.utils.constants import image_size
 import matplotlib.pyplot as plt
 import cv2
 #%%
-video_path = f'{base_path}/single_class_single_object_detection/video/Best of 2024 Masters Agility Championships from Westminster Kennel Club _ FOX Sports.mp4'
+video_path = f'{base_path}/single_class_multiple_object_detection/video/Biggest Small Dog Day at the farm!.mp4'
 frame_new_size = (image_size, image_size)
 video, frames = FrameHelpers.get_video_and_frames(video_path)
 #%%
-model_path = f"{base_path}/YOLO_VGG16/degug_notebooks/vgg_f_modele32_vgg16_checkpoint.pth.tar"
-# model_path = f"{base_path}/single_class_single_object_detection/saved_models/vgg_f_modele32_vgg16_checkpoint.pth.tar"
-object_class_detector = Object_Class_Detector(model_path)
+# model_path = f"{base_path}/YOLO_VGG16/degug_notebooks/vgg_f_modele32_vgg16_checkpoint.pth.tar"
+model_path = f"{base_path}/single_class_multiple_object_detection/saved_models/vgg_f_modele32_vgg16_checkpoint.pth.tar"
+object_class_detector = Object_Class_Detector(model_path, iou_threshold=0.2, threshold=0.6, display_frames=True)
 #%%
 # len(frames)
 # np.save(f'{base_path}/single_class_single_object_detection/frames.npy', frames)
@@ -48,7 +48,7 @@ while frame_index < len(frames):
 
 #%%
 # save result frames as pkl
-np.save(f'{base_path}/single_class_single_object_detection/result_frames.npy', result_frames)
+np.save(f'{base_path}/single_class_multiple_object_detection/result_frames.npy', result_frames)
 
 #%%
 # load result frames from pkl
@@ -71,9 +71,9 @@ writer.release()
 # # %%
 # np.array(result_frames).shape
 # # %%
-# import matplotlib.pyplot as plt
-# plt.imshow(result_frames[15])
-# plt.show()
+import matplotlib.pyplot as plt
+plt.imshow(result_frames[0])
+plt.show()
 # # %%
 # np.max(result_frames[15].astype(np.uint8))
 # # %%
