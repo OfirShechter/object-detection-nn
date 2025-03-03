@@ -30,8 +30,11 @@ model_path = f"{base_path}/YOLO_VGG16/degug_notebooks/vgg_f_modele32_vgg16_check
 # model_path = f"{base_path}/single_class_single_object_detection/saved_models/vgg_f_modele32_vgg16_checkpoint.pth.tar"
 object_class_detector = Object_Class_Detector(model_path)
 #%%
+# len(frames)
+# np.save(f'{base_path}/single_class_single_object_detection/frames.npy', frames)
+#%%
+# frames = np.load(f'{base_path}/single_class_single_object_detection/frames.npy', allow_pickle=True)
 len(frames)
-np.save(f'{base_path}/single_class_single_object_detection/frames.npy', frames)
 #%%
 batch_size = 16
 result_frames = []  # Buffer to store all processed frames
@@ -49,7 +52,7 @@ np.save(f'{base_path}/single_class_single_object_detection/result_frames.npy', r
 
 #%%
 # load result frames from pkl
-result_frames = np.load(f'{base_path}/single_class_single_object_detection/result_frames.npy', allow_pickle=True)
+# result_frames = np.load(f'{base_path}/single_class_single_object_detection/result_frames.npy', allow_pickle=True)
 #%%
 len(result_frames)
 #%%
