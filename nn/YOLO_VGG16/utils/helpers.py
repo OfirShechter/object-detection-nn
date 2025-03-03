@@ -156,7 +156,7 @@ def convert_cells_to_bboxes(predictions, anchors, s, is_predictions=True):
 # Function to plot images with bounding boxes and class labels
 
 
-def plot_image(image, boxes, labels):
+def plot_image(image, boxes, labels, display=True):
     # Getting the color map from matplotlib
     colour_map = plt.get_cmap("tab20b")
 
@@ -192,11 +192,12 @@ def plot_image(image, boxes, labels):
         cv2.putText(img_drawn, label, (upper_left_x, upper_left_y - 10),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
 
-    # Display the image
-    plt.figure(figsize=(8, 6))
-    plt.imshow(img_drawn)  # Convert BGR to RGB for correct color display
-    plt.axis("off")
-    plt.show()
+    if display:
+        # Display the image
+        plt.figure(figsize=(8, 6))
+        plt.imshow(img_drawn)  # Convert BGR to RGB for correct color display
+        plt.axis("off")
+        plt.show()
 
     return img_drawn  # Return the modified image with drawn bounding boxes
 

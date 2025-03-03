@@ -69,7 +69,7 @@ class Object_Class_Detector():
             # Applying non-max suppression to remove overlapping bounding boxes 
             nms_boxes = nms(bboxes[i], iou_threshold=0, threshold=0.6) 
             # Plotting the image with bounding boxes 
-            image = plot_image(transformed_images[i].permute(1,2,0).detach().cpu(), nms_boxes, self.categories)
+            image = plot_image(transformed_images[i].permute(1,2,0).detach().cpu(), nms_boxes, self.categories, display=False)
             marked_images.append(image)
         
         return marked_images
