@@ -18,7 +18,7 @@ class Object_Class_Detector():
         if not os.path.exists(model_path):
             raise FileNotFoundError(f"{model_path} not found")
 
-        categories = ["dog"]
+        categories = ["airplane"]
         load_model = True
 
         model = YOLO_VGG16_F(num_classes=len(categories)).to(device)
@@ -77,7 +77,7 @@ class Object_Class_Detector():
                 bboxes[i], iou_threshold=self.iou_threshold, threshold=self.threshold)
             # Plotting the image with bounding boxes
             image = plot_image(transformed_images[i].permute(1, 2, 0).detach(
-            ).cpu(), nms_boxes, self.categories, display=self.display_frames)
+            ).cpu(), nms_boxes, self.categories, display=self.display_frames, )
             marked_images.append(image)
 
         return marked_images

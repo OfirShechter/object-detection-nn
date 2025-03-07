@@ -22,13 +22,13 @@ from nn.single_class_multiple_object_detection.utils.constants import image_size
 import matplotlib.pyplot as plt
 import cv2
 #%%
-video_path = f'{base_path}/single_class_multiple_object_detection/video/Dogs playing outside. GUARANTEED to make you smile. Most watched video. top. let your dog listen.mp4'
+video_path = f'{base_path}/single_class_multiple_object_detection/video/RIAT 2014 Frecce Tricolori Italian Air Force The Royal International Air Tattoo.mp4'
 frame_new_size = (image_size, image_size)
 video, frames = FrameHelpers.get_video_and_frames(video_path)
 #%%
-model_path = f"{base_path}/YOLO_VGG16/degug_notebooks/vgg_f_modele32_vgg16_checkpoint.pth.tar"
-# model_path = f"{base_path}/single_class_multiple_object_detection/saved_models/vgg_f_modele32_vgg16_checkpoint.pth.tar"
-object_class_detector = Object_Class_Detector(model_path, iou_threshold=0.2, threshold=0.6, display_frames=False)
+model_path = f"{base_path}/YOLO_VGG16/degug_notebooks/vgg_f_airplain_modele20_vgg16_checkpoint.pth.tar"
+# model_path = f"{base_path}/single_class_multiple_object_detection/saved_models/vgg_f_airplain_modele20_vgg16_checkpoint.pth.tar"
+object_class_detector = Object_Class_Detector(model_path, iou_threshold=0.1, threshold=0.5, display_frames=True)
 #%%
 # len(frames)
 # np.save(f'{base_path}/single_class_single_object_detection/frames.npy', frames)
@@ -38,7 +38,7 @@ len(frames)
 #%%
 batch_size = 16
 result_frames = []  # Buffer to store all processed frames
-frame_index = 0 # Current frame index
+frame_index = 0# Current frame index
 while frame_index < len(frames):
     processed_frames = object_class_detector.plot_marked_images(
         frames[frame_index:frame_index+batch_size].copy())
@@ -58,7 +58,7 @@ len(result_frames)
 #%%
 # write all frames to video
 frame_new_size = (image_size, image_size)
-output_path = f'{base_path}/multiple_dog_detection-5dogs.avi'
+output_path = f'{base_path}/multiple_airplane_detection.avi'
 frame_rate = 30
 fourcc = cv2.VideoWriter_fourcc(*'XVID')
 writer = cv2.VideoWriter(output_path, fourcc, frame_rate, frame_new_size)

@@ -153,6 +153,7 @@ def plot_image(image, boxes, labels, display=True):
     # Plot bounding boxes and labels
     for box in boxes:
         class_pred = int(box[0])
+        score = box[1]
         box = box[2:]
         upper_left_x = int((box[0] - box[2] / 2) * w)
         upper_left_y = int((box[1] - box[3] / 2) * h)
@@ -170,11 +171,12 @@ def plot_image(image, boxes, labels, display=True):
         label = labels[class_pred]
         (text_width, text_height), baseline = cv2.getTextSize(
             label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 2)
-        cv2.rectangle(img_drawn, (upper_left_x, upper_left_y - text_height - 10),
-                      (upper_left_x + text_width, upper_left_y), color, -1)
-        cv2.putText(img_drawn, label, (upper_left_x, upper_left_y - 10),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
-
+        # cv2.rectangle(img_drawn, (upper_left_x, upper_left_y - text_height - 10),
+        #               (upper_left_x + text_width, upper_left_y), color, -1)
+        # cv2.putText(img_drawn, label, (upper_left_x, upper_left_y - 10),
+        #             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+        # cv2.putText(img_drawn, f"{score:.2f}", (upper_left_x, upper_left_y - 10),
+        #             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
     if display:
         # Display the image
         plt.figure(figsize=(8, 6))
