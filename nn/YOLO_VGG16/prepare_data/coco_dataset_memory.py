@@ -13,6 +13,7 @@ class CocoDataset(Dataset):
             self, coco_obj, categories, anchors, transform=None,
             image_size=416, grid_sizes=[13, 26, 52]
     ):
+        self.images_base_path = f"nn/cocodataset/images/train2017"
         self.coco = coco_obj
         self.cat_ids = self.coco.getCatIds(catNms=categories)
         # Get image ids for each category- should work with self.coco.getImgIds(catIds=cat_ids), but has a bug
@@ -49,7 +50,7 @@ class CocoDataset(Dataset):
         error_counter = 0
         while True:
             try:
-                return self.__getitem_helper(idx)
+                return self.getitem_helper(idx)
             except Exception as e:
                 print(e)
                 # choose random different idx
@@ -58,7 +59,7 @@ class CocoDataset(Dataset):
                 if error_counter > 10:
                     print("Too many errors")
                     raise Exception("Too many errors")
-        
+
     def getitem_helper(self, idx):
         coco = self.coco
         img_id = self.img_ids[idx]
@@ -68,13 +69,13 @@ class CocoDataset(Dataset):
 
         # Load image from memory
         padded_img_id = str(img_id).zfill(12)
-        img_path = f'../../cocodataset/images/train2017/{padded_img_id}.jpg'
+        img_path = f'{self.images_base_path}/{padded_img_id}.jpg'
         img = cv2.imread(img_path)
         if img is None:
             raise Exception(f"Failed to load image from {img_path}")
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         img = np.array(Image.fromarray(img))
-        
+
         bboxes = []
         category_ids = []
         for ann in anns:
@@ -93,8 +94,9 @@ class CocoDataset(Dataset):
                   for x, y, w, h, label in bboxes]
 
         # Convert COCO bbox format (x, y, width, height) to (center_x, center_y, width, height)- and lable to lable_by_location
-        bboxes = [[x + w / 2, y + h / 2, w, h, self.cat_ids_map[label]] for x, y, w, h, label in bboxes]
-        
+        bboxes = [[x + w / 2, y + h / 2, w, h, self.cat_ids_map[label]]
+                  for x, y, w, h, label in bboxes]
+
         # Below assumes 3 scale predictions (as paper) and same num of anchors per scale
         # target : [probabilities, x, y, width, height, class_label]
         targets = [torch.zeros((self.num_anchors_per_scale, s, s, 6))
