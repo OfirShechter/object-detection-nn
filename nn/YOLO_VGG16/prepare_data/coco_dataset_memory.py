@@ -5,7 +5,6 @@ import requests
 import cv2
 import numpy as np
 from PIL import Image
-
 # Create a dataset class to load the images and labels from the folder
 
 
@@ -64,7 +63,7 @@ class CocoDataset(Dataset):
 
         # Load image from memory
         padded_img_id = str(img_id).zfill(12)
-        img_path = f'nn/cocodataset/images/train2017/{padded_img_id}.jpg'
+        img_path = f'.../cocodataset/images/train2017/{padded_img_id}.jpg'
         img = cv2.imread(img_path)
         if img is None:
             raise Exception(f"Failed to load image from {img_path}")
