@@ -46,6 +46,7 @@ class CocoDataset(Dataset):
         return len(self.img_ids)
 
     def __getitem__(self, idx):
+        error_counter = 0
         while True:
             try:
                 return self.__getitem_helper(idx)
@@ -53,8 +54,12 @@ class CocoDataset(Dataset):
                 print(e)
                 # choose random different idx
                 idx = np.random.randint(0, len(self.img_ids))
+                error_counter += 1
+                if error_counter > 10:
+                    print("Too many errors")
+                    raise Exception("Too many errors")
         
-    def __getitem_helper(self, idx):
+    def getitem_helper(self, idx):
         coco = self.coco
         img_id = self.img_ids[idx]
         ann_ids = coco.getAnnIds(
