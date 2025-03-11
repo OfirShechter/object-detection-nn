@@ -47,6 +47,15 @@ class CocoDataset(Dataset):
         return len(self.img_ids)
 
     def __getitem__(self, idx):
+        while True:
+            try:
+                return self.__getitem_helper(idx)
+            except Exception as e:
+                print(e)
+                # choose random different idx
+                idx = np.random.randint(0, len(self.img_ids))
+        
+    def __getitem_helper(self, idx):
         coco = self.coco
         img_id = self.img_ids[idx]
         ann_ids = coco.getAnnIds(
