@@ -1,7 +1,7 @@
 #%%
 import os
 
-remote = True
+remote = False
 
 if remote:
     base_path = '/home/dcor/niskhizov/Rar/object-detection-nn/nn'
@@ -17,19 +17,19 @@ else:
 import numpy as np
 
 
-from nn.single_class_multiple_object_detection.object_class_detector import Object_Class_Detector
+from nn.multiple_class_multiple_object_detection.object_class_detector import Object_Class_Detector
 from nn.utils.frames_helpers import FrameHelpers
-from nn.single_class_multiple_object_detection.utils.constants import image_size
+from nn.multiple_class_multiple_object_detection.utils.constants import image_size
 import matplotlib.pyplot as plt
 import cv2
 #%%
-video_path = f'{base_path}/single_class_multiple_object_detection/video/RIAT 2014 Frecce Tricolori Italian Air Force The Royal International Air Tattoo.mp4'
+video_path = f'{base_path}/multiple_class_multiple_object_detection/video/25 Hero Animals That Saved Human Lives.mp4'
 frame_new_size = (image_size, image_size)
 video, frames = FrameHelpers.get_video_and_frames(video_path)
 #%%
-model_path = f"{base_path}/YOLO_VGG16/degug_notebooks/vgg_f_airplain_modele20_vgg16_checkpoint.pth.tar"
-# model_path = f"{base_path}/single_class_multiple_object_detection/saved_models/vgg_f_airplain_modele20_vgg16_checkpoint.pth.tar"
-object_class_detector = Object_Class_Detector(model_path, iou_threshold=0.1, threshold=0.5, display_frames=False)
+# model_path = f"{base_path}/YOLO_VGG16/degug_notebooks/vgg_f_all_modele3_b16000_vgg16_checkpoint.pth.tar"
+model_path = f"{base_path}/multiple_class_multiple_object_detection/saved_models/vgg_f_all_modele3_b16000_vgg16_checkpoint.pth.tar"
+object_class_detector = Object_Class_Detector(model_path, iou_threshold=0.1, threshold=0.6, display_frames=True)
 #%%
 # len(frames)
 # np.save(f'{base_path}/single_class_single_object_detection/frames.npy', frames)
@@ -37,7 +37,7 @@ object_class_detector = Object_Class_Detector(model_path, iou_threshold=0.1, thr
 # frames = np.load(f'{base_path}/single_class_single_object_detection/frames.npy', allow_pickle=True)
 len(frames)
 #%%
-batch_size = 16
+batch_size = 2
 result_frames = []  # Buffer to store all processed frames
 frame_index = 0# Current frame index
 while frame_index < len(frames):

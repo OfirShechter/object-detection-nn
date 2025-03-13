@@ -5,8 +5,8 @@ import cv2
 import numpy as np
 from nn.YOLO_VGG16.utils.constants import ANCHORS
 from nn.YOLO_VGG16.prepare_data.transforms import execute_transform
-from nn.single_class_multiple_object_detection.utils.helpers import convert_cells_to_bboxes, load_checkpoint, nms, plot_image
-from nn.single_class_multiple_object_detection.utils.constants import device, s, leanring_rate, image_size
+from nn.multiple_class_multiple_object_detection.utils.helpers import convert_cells_to_bboxes, load_checkpoint, nms, plot_image
+from nn.multiple_class_multiple_object_detection.utils.constants import device, s, leanring_rate, image_size
 from nn.YOLO_VGG16.model.YOLO_VGG16_full import YOLO_VGG16_F
 import torch
 import torch.optim as optim
@@ -18,7 +18,23 @@ class Object_Class_Detector():
         if not os.path.exists(model_path):
             raise FileNotFoundError(f"{model_path} not found")
 
-        categories = ["airplane"]
+        categories = ['person',
+                      'bicycle',
+                      'car',
+                      'motorcycle',
+                      'airplane',
+                      'bus',
+                      'train',
+                      'truck',
+                      'boat',
+                      'traffic light',
+                      'stop sign',
+                      'parking meter',
+                      'bench',
+                      'bird',
+                      'cat',
+                      'dog',
+                      'chair',]
         load_model = True
 
         model = YOLO_VGG16_F(num_classes=len(categories)).to(device)
