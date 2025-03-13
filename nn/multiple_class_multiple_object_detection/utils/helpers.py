@@ -139,8 +139,8 @@ def convert_cells_to_bboxes(predictions, anchors, s, is_predictions=True):
 # Function to plot images with bounding boxes and class labels
 
 colors_options =  {
-    'blue': (255, 0, 0),
-    'pink': (230, 0, 61)
+    'blue': (78, 179, 255),
+    'pink': (255, 0, 145)
 }
 color_lables = ['blue', 'pink']
 

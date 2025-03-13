@@ -16,13 +16,13 @@ class FrameHelpers:
         frames = []
         success, frame = video.read()
         print("video was found:", success)
-        # counter = 100
+        counter = 100
         while success:
             frames.append(frame)
             success, frame = video.read()
-            # counter -= 1
-            # if counter == 0:
-            #     break
+            counter -= 1
+            if counter == 0:
+                break
         return video, frames
 
     @staticmethod

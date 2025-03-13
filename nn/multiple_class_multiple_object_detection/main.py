@@ -1,11 +1,11 @@
 #%%
 import os
 
-remote = False
+remote = True
 
 if remote:
     base_path = '/home/dcor/niskhizov/Rar/object-detection-nn/nn'
-    os.chdir('object-detection-nn')
+    os.chdir('Rar/object-detection-nn')
 else:
     base_path = 'nn'
     os.chdir('../..')
@@ -23,16 +23,17 @@ from nn.multiple_class_multiple_object_detection.utils.constants import image_si
 import matplotlib.pyplot as plt
 import cv2
 #%%
-video_path = f'{base_path}/multiple_class_multiple_object_detection/video/25 Hero Animals That Saved Human Lives.mp4'
+video_path = f'{base_path}/multiple_class_multiple_object_detection/video/People almost got hit by a car compilation.mp4'
 frame_new_size = (image_size, image_size)
 video, frames = FrameHelpers.get_video_and_frames(video_path)
 #%%
-# model_path = f"{base_path}/YOLO_VGG16/degug_notebooks/vgg_f_all_modele3_b16000_vgg16_checkpoint.pth.tar"
-model_path = f"{base_path}/multiple_class_multiple_object_detection/saved_models/vgg_f_all_modele3_b16000_vgg16_checkpoint.pth.tar"
-object_class_detector = Object_Class_Detector(model_path, iou_threshold=0.1, threshold=0.6, display_frames=True)
+model_path = f"{base_path}/YOLO_VGG16/degug_notebooks/vgg_f_all_modele4_b2000_vgg16_checkpoint.pth.tar"
+# model_path = f"{base_path}/multiple_class_multiple_object_detection/saved_models/vgg_f_all_modele4_b2000_vgg16_checkpoint.pth.tar"
+object_class_detector = Object_Class_Detector(model_path, iou_threshold=0.1, threshold=0.67, display_frames=False)
 #%%
 # len(frames)
 # np.save(f'{base_path}/single_class_single_object_detection/frames.npy', frames)
+
 #%%
 # frames = np.load(f'{base_path}/single_class_single_object_detection/frames.npy', allow_pickle=True)
 len(frames)
@@ -59,7 +60,7 @@ len(result_frames)
 #%%
 # write all frames to video
 frame_new_size = (image_size, image_size)
-output_path = f'{base_path}/multiple_airplane_detection.avi'
+output_path = f'{base_path}/multiple_classes_detection_0.67.avi'
 frame_rate = 25
 fourcc = cv2.VideoWriter_fourcc(*'XVID')
 writer = cv2.VideoWriter(output_path, fourcc, frame_rate, frame_new_size)
