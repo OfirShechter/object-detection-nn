@@ -18,23 +18,7 @@ class Object_Class_Detector():
         if not os.path.exists(model_path):
             raise FileNotFoundError(f"{model_path} not found")
 
-        categories = ['person',
-                      'bicycle',
-                      'car',
-                      'motorcycle',
-                      'airplane',
-                      'bus',
-                      'train',
-                      'truck',
-                      'boat',
-                      'traffic light',
-                      'stop sign',
-                      'parking meter',
-                      'bench',
-                      'bird',
-                      'cat',
-                      'dog',
-                      'chair',]
+        categories = ['person','car']
         load_model = True
 
         model = YOLO_VGG16_F(num_classes=len(categories)).to(device)
