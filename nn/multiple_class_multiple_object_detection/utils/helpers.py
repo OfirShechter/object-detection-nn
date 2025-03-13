@@ -162,7 +162,7 @@ def plot_image(image, boxes, labels, display=True):
         lower_right_y = int((box[1] + box[3] / 2) * h)
 
         # Get color
-        color = colors_options(class_pred)
+        color = colors_options[class_pred]
 
         # Draw rectangle on image
         cv2.rectangle(img_drawn, (upper_left_x, upper_left_y),
