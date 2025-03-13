@@ -140,7 +140,7 @@ def convert_cells_to_bboxes(predictions, anchors, s, is_predictions=True):
 
 colors_options =  {
     'blue': (255, 0, 0),
-    'pink': (255, 192, 203)
+    'pink': (230, 0, 61)
 }
 color_lables = ['blue', 'pink']
 
