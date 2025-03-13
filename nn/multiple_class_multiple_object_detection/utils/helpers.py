@@ -138,7 +138,11 @@ def convert_cells_to_bboxes(predictions, anchors, s, is_predictions=True):
 
 # Function to plot images with bounding boxes and class labels
 
-colors_options = ['blue', 'pink']
+colors_options =  {
+    'blue': (255, 0, 0),
+    'pink': (255, 192, 203)
+}
+color_lables = ['blue', 'pink']
 
 def plot_image(image, boxes, labels, display=True):
     # Getting the color map from matplotlib
@@ -162,7 +166,7 @@ def plot_image(image, boxes, labels, display=True):
         lower_right_y = int((box[1] + box[3] / 2) * h)
 
         # Get color
-        color = colors_options[class_pred]
+        color = colors_options[color_lables[class_pred]]
 
         # Draw rectangle on image
         cv2.rectangle(img_drawn, (upper_left_x, upper_left_y),
