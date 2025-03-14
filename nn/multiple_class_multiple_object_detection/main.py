@@ -29,7 +29,7 @@ video, frames = FrameHelpers.get_video_and_frames(video_path)
 #%%
 model_path = f"{base_path}/YOLO_VGG16/degug_notebooks/vgg_f_all_modele4_b2000_vgg16_checkpoint.pth.tar"
 # model_path = f"{base_path}/multiple_class_multiple_object_detection/saved_models/vgg_f_all_modele4_b2000_vgg16_checkpoint.pth.tar"
-object_class_detector = Object_Class_Detector(model_path, iou_threshold=0.1, threshold=0.67, display_frames=False)
+object_class_detector = Object_Class_Detector(model_path, iou_threshold=0.1, threshold=0.68, display_frames=False)
 #%%
 # len(frames)
 # np.save(f'{base_path}/single_class_single_object_detection/frames.npy', frames)
@@ -38,7 +38,7 @@ object_class_detector = Object_Class_Detector(model_path, iou_threshold=0.1, thr
 # frames = np.load(f'{base_path}/single_class_single_object_detection/frames.npy', allow_pickle=True)
 len(frames)
 #%%
-batch_size = 2
+batch_size = 16
 result_frames = []  # Buffer to store all processed frames
 frame_index = 0# Current frame index
 while frame_index < len(frames):
@@ -60,7 +60,7 @@ len(result_frames)
 #%%
 # write all frames to video
 frame_new_size = (image_size, image_size)
-output_path = f'{base_path}/multiple_classes_detection_0.67.avi'
+output_path = f'{base_path}/multiple_classes_detection_0.68.avi'
 frame_rate = 25
 fourcc = cv2.VideoWriter_fourcc(*'XVID')
 writer = cv2.VideoWriter(output_path, fourcc, frame_rate, frame_new_size)
