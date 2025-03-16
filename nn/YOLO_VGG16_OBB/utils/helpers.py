@@ -133,10 +133,10 @@ def convert_cells_to_bboxes(predictions, anchors, s, is_predictions=True):
     if is_predictions:
         anchors = anchors.reshape(1, len(anchors), 1, 1, 2)
         box_predictions[..., 0:2] = torch.sigmoid(box_predictions[..., 0:2])
-        box_predictions[..., 2:] = torch.exp(
-            box_predictions[..., 2:]) * anchors
+        box_predictions[..., 2:5] = torch.exp(
+            box_predictions[..., 2:5]) * anchors
         scores = torch.sigmoid(predictions[..., 0:1])
-        best_class = torch.argmax(predictions[..., 5:], dim=-1).unsqueeze(-1)
+        best_class = torch.argmax(predictions[..., 6:], dim=-1).unsqueeze(-1)
 
     # Else we will just calculate scores and best class.
     else:
