@@ -8,7 +8,7 @@ def iou(box1, box2, is_pred=True):
     if is_pred:
         # IoU score for prediction and label
         # box1 (prediction) and box2 (label) are both in [x, y, width, height, angle] format
-
+        print('iou- box1:', box1)
         # Convert boxes to polygons
         poly1 = cv2.boxPoints(((box1[..., 0], box1[..., 1]), (box1[..., 2], box1[..., 3]), box1[..., 4]))
         poly2 = cv2.boxPoints(((box2[..., 0], box2[..., 1]), (box2[..., 2], box2[..., 3]), box2[..., 4]))
