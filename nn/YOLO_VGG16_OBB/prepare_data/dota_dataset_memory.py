@@ -98,7 +98,7 @@ class DotaDataset(Dataset):
             augs = self.transform(
                 image=img, bboxes=bboxes)
             img = augs["image"]
-            bboxes = [[cx, cy, w, h, angle, class_label] for (cx, cy, w, h, class_label), angle in zip(augs["bboxes"], extra_info)]
+            bboxes = [[cx, cy, w, h, angle, class_label] for (cx, cy, w, h, class_label), (angle) in zip(augs["bboxes"], extra_info)]
         print('bboxes',bboxes[0])
         # Below assumes 3 scale predictions (as paper) and same num of anchors per scale
         # target : [probabilities, x, y, width, height, angle, class_label]
