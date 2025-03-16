@@ -16,8 +16,6 @@ train_transform = lambda image_size: A.Compose(
 			brightness=0.5, contrast=0.5, 
 			saturation=0.5, hue=0.5, p=0.5
 		), 
-		# Flip the image horizontally 
-		A.HorizontalFlip(p=0.5), 
 		# Normalize the image 
 		A.Normalize( 
 			mean=[0, 0, 0], std=[1, 1, 1], max_pixel_value=255
@@ -27,7 +25,7 @@ train_transform = lambda image_size: A.Compose(
 	], 
 	# Augmentation for bounding boxes 
 	bbox_params=A.BboxParams( 
-					format="albumentations", 
+					format="yolo", 
 					min_visibility=0.4, 
 				) 
 ) 
@@ -50,7 +48,7 @@ test_transform = lambda image_size: A.Compose(
 	], 
 	# Augmentation for bounding boxes 
 	bbox_params=A.BboxParams( 
-					format="albumentations", 
+					format="yolo", 
 					min_visibility=0.4, 
 				) 
 )
