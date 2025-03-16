@@ -89,13 +89,6 @@ class DotaDataset(Dataset):
                 rect = cv2.minAreaRect(poly)
                 (cx, cy), (w, h), angle = rect
                 
-                # Normalize
-                cx = min(max(cx / self.image_size, 0.0), 1.0)
-                cy = min(max(cy / self.image_size, 0.0), 1.0)
-                w = min(max(w / self.image_size, 0.0), 1.0)
-                h = min(max(h / self.image_size, 0.0), 1.0)
-
-                
                 bboxes.append([cx, cy, w, h, angle, class_label])
 
 
@@ -104,6 +97,10 @@ class DotaDataset(Dataset):
                 image=img, bboxes=bboxes)
             img = augs["image"]
             bboxes = augs["bboxes"]
+
+        # Normalize bounding box coordinates
+        bboxes = [[x / self.image_size, y / self.image_size, w / self.image_size, h / self.image_size, angle, label]
+                  for x, y, w, h, angle, label in bboxes]
 
         # Below assumes 3 scale predictions (as paper) and same num of anchors per scale
         # target : [probabilities, x, y, width, height, angle, class_label]
