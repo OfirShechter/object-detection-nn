@@ -125,7 +125,7 @@ def convert_cells_to_bboxes(predictions, anchors, s, is_predictions=True):
     # Number of anchors
     num_anchors = len(anchors)
     # List of all the predictions
-    box_predictions = predictions[..., 1:5]
+    box_predictions = predictions[..., 1:6]
 
     # If the input is predictions then we will pass the x and y coordinate
     # through sigmoid function and width and height to exponent function and
@@ -141,7 +141,7 @@ def convert_cells_to_bboxes(predictions, anchors, s, is_predictions=True):
     # Else we will just calculate scores and best class.
     else:
         scores = predictions[..., 0:1]
-        best_class = predictions[..., 5:6]
+        best_class = predictions[..., 6:7]
 
     # Calculate cell indices
     cell_indices = (
@@ -156,12 +156,12 @@ def convert_cells_to_bboxes(predictions, anchors, s, is_predictions=True):
     y = 1 / s * (box_predictions[..., 1:2] +
                  cell_indices.permute(0, 1, 3, 2, 4))
     width_height = 1 / s * box_predictions[..., 2:4]
-
+    angle = box_predictions[..., 4:5]
     # Concatinating the values and reshaping them in
-    # (BATCH_SIZE, num_anchors * S * S, 6) shape
+    # (BATCH_SIZE, num_anchors * S * S, 7) shape
     converted_bboxes = torch.cat(
-        (best_class, scores, x, y, width_height), dim=-1
-    ).reshape(batch_size, num_anchors * s * s, 6)
+        (best_class, scores, x, y, width_height, angle), dim=-1
+    ).reshape(batch_size, num_anchors * s * s, 7)
 
     # Returning the reshaped and converted bounding box list
     return converted_bboxes.tolist()
