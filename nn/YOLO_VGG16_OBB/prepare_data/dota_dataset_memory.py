@@ -91,14 +91,14 @@ class DotaDataset(Dataset):
                 rect = cv2.minAreaRect(poly)
                 (cx, cy), (w, h), angle = rect
                 
-                bboxes.append([cx / img_size_x, cy / img_size_y, w / img_size_x, h / img_size_y])
-                extra_info.append([angle, class_label])
+                bboxes.append([cx / img_size_x, cy / img_size_y, w / img_size_x, h / img_size_y, class_label])
+                extra_info.append([angle])
         print('before transform', bboxes[0], extra_info[0])
         if self.transform is not None:
             augs = self.transform(
                 image=img, bboxes=bboxes)
             img = augs["image"]
-            bboxes = [[cx, cy, w, h, angle, class_label] for (cx, cy, w, h), (angle, class_label) in zip(augs["bboxes"], extra_info)]
+            bboxes = [[cx, cy, w, h, angle, class_label] for (cx, cy, w, h, class_label), angle in zip(augs["bboxes"], extra_info)]
         print('bboxes',bboxes[0])
         # Below assumes 3 scale predictions (as paper) and same num of anchors per scale
         # target : [probabilities, x, y, width, height, angle, class_label]
