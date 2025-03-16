@@ -72,6 +72,7 @@ class DotaDataset(Dataset):
             raise Exception(f"Labels file not found: {label_path}")
 
         bboxes = []
+        extra_info = []
         with open(label_path, 'r') as f:
             lines = f.readlines()
             print(lines[0])
@@ -90,14 +91,14 @@ class DotaDataset(Dataset):
                 rect = cv2.minAreaRect(poly)
                 (cx, cy), (w, h), angle = rect
                 
-                bboxes.append([cx / img_size_x, cy / img_size_y, w / img_size_x, h / img_size_y, angle, class_label])
-
-        print('before transform', bboxes[0])
+                bboxes.append([cx / img_size_x, cy / img_size_y, w / img_size_x, h / img_size_y])
+                extra_info.append([angle, class_label])
+        print('before transform', bboxes[0], extra_info[0])
         if self.transform is not None:
             augs = self.transform(
                 image=img, bboxes=bboxes)
             img = augs["image"]
-            bboxes = augs["bboxes"]
+            bboxes = [[cx, cy, w, h, angle, class_label] for (cx, cy, w, h), (angle, class_label) in zip(augs["bboxes"], extra_info)]
         print('bboxes',bboxes[0])
         # Below assumes 3 scale predictions (as paper) and same num of anchors per scale
         # target : [probabilities, x, y, width, height, angle, class_label]
