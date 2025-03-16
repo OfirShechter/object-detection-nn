@@ -100,6 +100,8 @@ class DotaDataset(Dataset):
                     print('rect:', rect)
                     print('cx:', cx, 'cy:', cy, 'w:',
                           w, 'h:', h, 'angle:', angle)
+                else:
+                    print('No lower then 0:', n_cx, n_cy, n_w, n_h, angle)
                 bboxes.append([n_cx, n_cy, n_w, n_h, class_label])
                 angles.append(angle)
         if self.transform is not None:
