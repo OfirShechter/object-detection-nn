@@ -87,7 +87,7 @@ class DotaDataset(Dataset):
                 class_label = self.cat_ids_map[category]
                 
                 # Convert OBB to (cx, cy, w, h, angle)
-                poly = np.array([[x1, y1], [x2, y2], [x3, y3], [x4, y4]])
+                poly = np.array([[x1, y1], [x2, y2], [x3, y3], [x4, y4]], dtype=np.float32).reshape((-1, 1, 2))
                 rect = cv2.minAreaRect(poly)
                 (cx, cy), (w, h), angle = rect
                 
