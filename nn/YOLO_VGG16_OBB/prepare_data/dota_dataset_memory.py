@@ -91,7 +91,7 @@ class DotaDataset(Dataset):
                 
                 bboxes.append([cx, cy, w, h, angle, class_label])
 
-
+        print('before transform', bboxes[0])
         if self.transform is not None:
             augs = self.transform(
                 image=img, bboxes=bboxes)
@@ -101,7 +101,7 @@ class DotaDataset(Dataset):
         # Normalize bounding box coordinates
         bboxes = [[x / self.image_size, y / self.image_size, w / self.image_size, h / self.image_size, angle, label]
                   for x, y, w, h, angle, label in bboxes]
-
+        print('bboxes',bboxes[0])
         # Below assumes 3 scale predictions (as paper) and same num of anchors per scale
         # target : [probabilities, x, y, width, height, angle, class_label]
         targets = [torch.zeros((self.num_anchors_per_scale, s, s, 7))
