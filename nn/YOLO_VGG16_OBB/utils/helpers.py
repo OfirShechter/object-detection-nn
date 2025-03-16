@@ -4,41 +4,30 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Defining a function to calculate Intersection over Union (IoU)
-
-
 def iou(box1, box2, is_pred=True):
     if is_pred:
         # IoU score for prediction and label
-        # box1 (prediction) and box2 (label) are both in [x, y, width, height] format
+        # box1 (prediction) and box2 (label) are both in [x, y, width, height, angle] format
 
-        # Box coordinates of prediction
-        b1_x1 = box1[..., 0:1] - box1[..., 2:3] / 2
-        b1_y1 = box1[..., 1:2] - box1[..., 3:4] / 2
-        b1_x2 = box1[..., 0:1] + box1[..., 2:3] / 2
-        b1_y2 = box1[..., 1:2] + box1[..., 3:4] / 2
+        # Convert boxes to polygons
+        poly1 = cv2.boxPoints(((box1[..., 0], box1[..., 1]), (box1[..., 2], box1[..., 3]), box1[..., 4]))
+        poly2 = cv2.boxPoints(((box2[..., 0], box2[..., 1]), (box2[..., 2], box2[..., 3]), box2[..., 4]))
 
-        # Box coordinates of ground truth
-        b2_x1 = box2[..., 0:1] - box2[..., 2:3] / 2
-        b2_y1 = box2[..., 1:2] - box2[..., 3:4] / 2
-        b2_x2 = box2[..., 0:1] + box2[..., 2:3] / 2
-        b2_y2 = box2[..., 1:2] + box2[..., 3:4] / 2
+        # Convert polygons to torch tensors
+        poly1 = torch.tensor(poly1, dtype=torch.float32)
+        poly2 = torch.tensor(poly2, dtype=torch.float32)
 
-        # Get the coordinates of the intersection rectangle
-        x1 = torch.max(b1_x1, b2_x1)
-        y1 = torch.max(b1_y1, b2_y1)
-        x2 = torch.min(b1_x2, b2_x2)
-        y2 = torch.min(b1_y2, b2_y2)
-        # Make sure the intersection is at least 0
-        intersection = (x2 - x1).clamp(0) * (y2 - y1).clamp(0)
+        # Calculate intersection area
+        inter_area = polygon_intersection_area(poly1, poly2)
 
-        # Calculate the union area
-        box1_area = abs((b1_x2 - b1_x1) * (b1_y2 - b1_y1))
-        box2_area = abs((b2_x2 - b2_x1) * (b2_y2 - b2_y1))
-        union = box1_area + box2_area - intersection
+        # Calculate union area
+        box1_area = box1[..., 2] * box1[..., 3]
+        box2_area = box2[..., 2] * box2[..., 3]
+        union_area = box1_area + box2_area - inter_area
 
-        # Calculate the IoU score
+        # Calculate IoU score
         epsilon = 1e-6
-        iou_score = intersection / (union + epsilon)
+        iou_score = inter_area / (union_area + epsilon)
 
         # Return IoU score
         return iou_score
@@ -61,8 +50,21 @@ def iou(box1, box2, is_pred=True):
         # Return IoU score
         return iou_score
 
-# Non-maximum suppression function to remove overlapping bounding boxes
+def polygon_intersection_area(poly1, poly2):
+    # Convert polygons to cv2 format
+    poly1 = poly1.numpy().astype(np.float32)
+    poly2 = poly2.numpy().astype(np.float32)
 
+    # Calculate intersection polygon
+    inter_poly = cv2.intersectConvexConvex(poly1, poly2)
+
+    if inter_poly[0] > 0:
+        # Calculate intersection area
+        inter_area = cv2.contourArea(inter_poly[1])
+    else:
+        inter_area = 0.0
+
+    return torch.tensor(inter_area, dtype=torch.float32)
 
 def nms(bboxes_orig, iou_threshold, threshold):
     # Filter out bounding boxes with confidence below the threshold.

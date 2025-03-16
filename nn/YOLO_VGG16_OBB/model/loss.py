@@ -50,6 +50,7 @@ class YOLOLoss(nn.Module):
 		class_loss = self.cross_entropy((pred[..., 5:][obj]), 
 								target[..., 5][obj].long()) 
 
+		# Calculate angle loss
 		# Total loss 
 		return ( 
 			box_loss 
