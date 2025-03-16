@@ -73,6 +73,8 @@ class DotaDataset(Dataset):
         bboxes = []
         with open(label_path, 'r') as f:
             lines = f.readlines()
+            print(f"Number of lines in label file: {len(lines)}")
+            print(lines[0])
             for line in lines:
                 parts = line.strip().split()
                 print('PARTS:', parts)
