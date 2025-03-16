@@ -12,4 +12,5 @@ nn/cocodataset/images/*
 runs/
 **/video/*
 !**/video/.gitkeep
+nn/dotadataset/*
 !nn/dotadataset/.gitkeep
