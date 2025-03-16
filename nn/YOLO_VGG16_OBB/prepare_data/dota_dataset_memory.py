@@ -2,7 +2,6 @@ import os
 import torch
 from torch.utils.data import Dataset
 from ..utils.helpers import iou
-import requests
 import cv2
 import numpy as np
 from PIL import Image
@@ -76,6 +75,7 @@ class DotaDataset(Dataset):
             lines = f.readlines()
             for line in lines:
                 parts = line.strip().split()
+                print('PARTS:', parts)
                 if len(parts) < 10:
                     continue  # Skip invalid lines
                 x1, y1, x2, y2, x3, y3, x4, y4 = map(float, parts[:8])
