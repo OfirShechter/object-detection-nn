@@ -75,7 +75,6 @@ class DotaDataset(Dataset):
         angles = []
         with open(label_path, 'r') as f:
             lines = f.readlines()
-            print(lines[0])
             for line in lines:
                 parts = line.strip().split()
                 if len(parts) < 10:

@@ -13,8 +13,8 @@ class YOLOLoss(nn.Module):
 		self.sigmoid = nn.Sigmoid() 
 	
 	def forward(self, pred, target, anchors): 
+		print('pred shape:', pred)
 		print('pred:', pred)
-		print('target:', target)
 		# Identifying which cells in target have objects 
 		# and which have no objects 
 		obj = target[..., 0] == 1
