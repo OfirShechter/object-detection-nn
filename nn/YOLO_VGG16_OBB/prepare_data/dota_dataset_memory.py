@@ -10,13 +10,15 @@ from PIL import Image
 
 class DotaDataset(Dataset):
     def __init__(
-            self, categories, anchors, transform=None, data_base_path = f"nn/dotadataset/train",
+            self, categories, anchors, transform=None, data_base_path=f"nn/dotadataset/train",
             image_size=416, grid_sizes=[13, 26, 52]
     ):
         self.images_path = f"{data_base_path}/images"
         self.labels_path = f"{data_base_path}/labelTxt-v1.0"
-        self.img_ids = [os.path.splitext(f)[0] for f in os.listdir(self.images_path) if f.endswith('.png')]
-        self.cat_ids_map = {category: i for i, category in enumerate(categories)}
+        self.img_ids = [os.path.splitext(f)[0] for f in os.listdir(
+            self.images_path) if f.endswith('.png')]
+        self.cat_ids_map = {category: i for i,
+                            category in enumerate(categories)}
         self.img_ids = self.img_ids[:2]
         # Image size
         self.image_size = image_size
@@ -84,24 +86,28 @@ class DotaDataset(Dataset):
                 if category not in self.cat_ids_map:
                     raise Exception(f"Unknown category: {category}")
                 class_label = self.cat_ids_map[category]
-                
+
                 # Convert OBB to (cx, cy, w, h, angle)
-                poly = np.array([[x1, y1], [x2, y2], [x3, y3], [x4, y4]], dtype=np.float32).reshape((-1, 1, 2))
+                poly = np.array([[x1, y1], [x2, y2], [x3, y3], [
+                                x4, y4]], dtype=np.float32).reshape((-1, 1, 2))
                 rect = cv2.minAreaRect(poly)
                 (cx, cy), (w, h), angle = rect
-                n_cx, n_cy, n_w, n_h = cx / img_size_x, cy / img_size_y, w / img_size_x, h / img_size_y
+                n_cx, n_cy, n_w, n_h = cx / img_size_x, cy / \
+                    img_size_y, w / img_size_x, h / img_size_y
                 if (n_cx < 0 or n_cy < 0 or n_w < 0 or n_h < 0):
                     print('origin:', [x1, y1], [x2, y2], [x3, y3], [x4, y4])
                     print('poly', poly)
                     print('rect:', rect)
-                    print('cx:', cx, 'cy:', cy, 'w:', w, 'h:', h, 'angle:', angle)
-                bboxes.append([cx / img_size_x, cy / img_size_y, w / img_size_x, h / img_size_y, class_label])
+                    print('cx:', cx, 'cy:', cy, 'w:',
+                          w, 'h:', h, 'angle:', angle)
+                bboxes.append([n_cx, n_cy, n_w, n_h, class_label])
                 angles.append(angle)
         if self.transform is not None:
             augs = self.transform(
                 image=img, bboxes=bboxes)
             img = augs["image"]
-            bboxes = [[cx, cy, w, h, angle, class_label] for (cx, cy, w, h, class_label), angle in zip(augs["bboxes"], angles)]
+            bboxes = [[cx, cy, w, h, angle, class_label] for (
+                cx, cy, w, h, class_label), angle in zip(augs["bboxes"], angles)]
         # Below assumes 3 scale predictions (as paper) and same num of anchors per scale
         # target : [probabilities, x, y, width, height, angle, class_label]
         targets = [torch.zeros((self.num_anchors_per_scale, s, s, 7))

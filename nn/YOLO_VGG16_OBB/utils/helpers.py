@@ -4,14 +4,24 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Defining a function to calculate Intersection over Union (IoU)
+
+
 def iou(box1, box2, is_pred=True):
     if is_pred:
         # IoU score for prediction and label
         # box1 (prediction) and box2 (label) are both in [x, y, width, height, angle] format
         print('iou- box1:', box1.shape, 'box2:', box2.shape)
         # Convert boxes to polygons
-        poly1 = cv2.boxPoints(((box1[..., 0], box1[..., 1]), (box1[..., 2], box1[..., 3]), box1[..., 4]))
-        poly2 = cv2.boxPoints(((box2[..., 0], box2[..., 1]), (box2[..., 2], box2[..., 3]), box2[..., 4]))
+        polys1 = []
+        polys2 = []
+
+        for i in range(box1.shape[0]):
+            poly1 = cv2.boxPoints(((box1[i, 0].item(), box1[i, 1].item(
+            )), (box1[i, 2].item(), box1[i, 3].item()), box1[i, 4].item()))
+            poly2 = cv2.boxPoints(((box2[i, 0].item(), box2[i, 1].item(
+            )), (box2[i, 2].item(), box2[i, 3].item()), box2[i, 4].item()))
+            polys1.append(poly1)
+            polys2.append(poly2)
 
         # Convert polygons to torch tensors
         poly1 = torch.tensor(poly1, dtype=torch.float32)
@@ -50,6 +60,7 @@ def iou(box1, box2, is_pred=True):
         # Return IoU score
         return iou_score
 
+
 def polygon_intersection_area(poly1, poly2):
     # Convert polygons to cv2 format
     poly1 = poly1.numpy().astype(np.float32)
@@ -65,6 +76,7 @@ def polygon_intersection_area(poly1, poly2):
         inter_area = 0.0
 
     return torch.tensor(inter_area, dtype=torch.float32)
+
 
 def nms(bboxes_orig, iou_threshold, threshold):
     # Filter out bounding boxes with confidence below the threshold.
