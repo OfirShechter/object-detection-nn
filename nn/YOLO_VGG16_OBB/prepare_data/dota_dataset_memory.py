@@ -73,11 +73,9 @@ class DotaDataset(Dataset):
         bboxes = []
         with open(label_path, 'r') as f:
             lines = f.readlines()
-            print(f"Number of lines in label file: {len(lines)}")
             print(lines[0])
             for line in lines:
                 parts = line.strip().split()
-                print('PARTS:', parts)
                 if len(parts) < 10:
                     continue  # Skip invalid lines
                 x1, y1, x2, y2, x3, y3, x4, y4 = map(float, parts[:8])
@@ -92,10 +90,11 @@ class DotaDataset(Dataset):
                 (cx, cy), (w, h), angle = rect
                 
                 # Normalize
-                cx /= self.image_size
-                cy /= self.image_size
-                w /= self.image_size
-                h /= self.image_size
+                cx = min(max(cx / self.image_size, 0.0), 1.0)
+                cy = min(max(cy / self.image_size, 0.0), 1.0)
+                w = min(max(w / self.image_size, 0.0), 1.0)
+                h = min(max(h / self.image_size, 0.0), 1.0)
+
                 
                 bboxes.append([cx, cy, w, h, angle, class_label])
 
