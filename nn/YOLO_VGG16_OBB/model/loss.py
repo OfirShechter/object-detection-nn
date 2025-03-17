@@ -31,7 +31,8 @@ class YOLOLoss(nn.Module):
         pred_angle = torch.tanh(pred[..., 5])
         # Box prediction confidence
         box_preds = torch.cat([self.sigmoid(pred[..., 1:3]),
-                               self.sigmoid(pred[..., 3:5]) * anchors, pred_angle.unsqueeze(-1)
+                               torch.exp(pred[..., 3:5]) *
+                               anchors, pred_angle.unsqueeze(-1)
                                ], dim=-1)
         # Calculating intersection over union for prediction and target
         ious = iou(box_preds[obj], target[..., 1:6][obj]).detach()
@@ -48,13 +49,20 @@ class YOLOLoss(nn.Module):
         box_loss = self.mse(pred[..., 1:5][obj],
                             target[..., 1:5][obj])
 
+        # Calculate angle loss
         angle_loss = self.mse(pred_angle[obj],
                               target[..., 5][obj])
         # Claculating class loss
         class_loss = self.cross_entropy((pred[..., 6:][obj]),
                                         target[..., 6][obj].long())
 
-        # Calculate angle loss
+        print('~~~~~~~~~~~~~ FIND UNCAPPED ~~~~~~~~~~~~~')
+        print('box_loss:', box_loss)
+        print('angle_loss:', angle_loss)
+        print('object_loss:', object_loss)
+        print('no_object_loss:', no_object_loss)
+        print('class_loss:', class_loss)
+
         # Total loss
         return (
             box_loss
