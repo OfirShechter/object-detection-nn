@@ -99,8 +99,8 @@ def nms(bboxes_orig, iou_threshold, threshold):
             # a higher confidence, then add the second bounding box to the list of
             # bounding boxes after non-maximum suppression.
             if box[0] != first_box[0] or iou(
-                    torch.tensor(first_box[2:]),
-                    torch.tensor(box[2:]),
+                    torch.tensor([first_box[2:]]),
+                    torch.tensor([box[2:]]),
             ) < iou_threshold:
                 # Check if box is not in bboxes_nms
                 if box not in bboxes_nms:
