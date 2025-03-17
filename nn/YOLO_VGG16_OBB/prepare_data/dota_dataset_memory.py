@@ -66,7 +66,6 @@ class DotaDataset(Dataset):
         if img is None:
             raise Exception(f"Failed to load image from {img_path}")
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        img = cv2.resize(img, (self.image_size, self.image_size))
         img = np.array(Image.fromarray(img))
         img_size_x = img.shape[1]
         img_size_y = img.shape[0]
