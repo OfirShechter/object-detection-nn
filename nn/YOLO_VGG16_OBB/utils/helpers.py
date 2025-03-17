@@ -29,8 +29,8 @@ def iou(box1, box2, is_pred=True):
             polys2.append(poly2)
 
         # Convert polygons to torch tensors
-        poly1 = torch.tensor(poly1, dtype=torch.float32)
-        poly2 = torch.tensor(poly2, dtype=torch.float32)
+        poly1 = torch.tensor(polys1, dtype=torch.float32)
+        poly2 = torch.tensor(polys2, dtype=torch.float32)
 
         # Calculate intersection area
         inter_area = polygon_intersection_area(poly1, poly2)
@@ -45,7 +45,7 @@ def iou(box1, box2, is_pred=True):
         iou_score = inter_area / (union_area + epsilon)
 
         # Return IoU score
-        return iou_score.unsqueeze(1)
+        return iou_score
 
     else:
         # IoU score based on width and height of bounding boxes
@@ -67,20 +67,20 @@ def iou(box1, box2, is_pred=True):
 
 
 def polygon_intersection_area(poly1, poly2):
-    # Convert polygons to cv2 format
-    poly1 = poly1.numpy().astype(np.float32)
-    poly2 = poly2.numpy().astype(np.float32)
+    # Ensure tensors are on CPU and convert to NumPy
+    poly1_np = poly1.detach().cpu().numpy().astype(np.float32)
+    poly2_np = poly2.detach().cpu().numpy().astype(np.float32)
 
-    # Calculate intersection polygon
-    inter_poly = cv2.intersectConvexConvex(poly1, poly2)
+    inter_areas = []
+    for p1, p2 in zip(poly1_np, poly2_np):
+        inter_poly = cv2.intersectConvexConvex(p1, p2)
+        if inter_poly[0] > 0 and inter_poly[1] is not None:
+            inter_areas.append(cv2.contourArea(inter_poly[1]))
+        else:
+            inter_areas.append(0.0)
 
-    if inter_poly[0] > 0:
-        # Calculate intersection area
-        inter_area = cv2.contourArea(inter_poly[1])
-    else:
-        inter_area = 0.0
-
-    return torch.tensor(inter_area, dtype=torch.float32)
+    # Convert result back to a tensor
+    return torch.tensor(inter_areas, dtype=torch.float32)
 
 
 def nms(bboxes_orig, iou_threshold, threshold):
