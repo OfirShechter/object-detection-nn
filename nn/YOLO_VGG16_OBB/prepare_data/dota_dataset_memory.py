@@ -19,7 +19,7 @@ class DotaDataset(Dataset):
             self.images_path) if f.endswith('.png')]
         self.cat_ids_map = {category: i for i,
                             category in enumerate(categories)}
-        self.img_ids = self.img_ids[:2]
+        # self.img_ids = self.img_ids[:2]
         # Image size
         self.image_size = image_size
         # Transformations
