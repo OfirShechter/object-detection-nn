@@ -94,9 +94,8 @@ class DotaDataset(Dataset):
                                 x4, y4]], dtype=np.float32).reshape((-1, 1, 2))
                 rect = cv2.minAreaRect(poly)
                 (cx, cy), (w, h), angle = rect
-                n_cx, n_cy, n_w, n_h = cx / img_size_x, cy / \
-                    img_size_y, w / img_size_x, h / img_size_y
-                if (n_cx < 0 or n_cy < 0 or n_w < 0 or n_h < 0):
+                n_cx, n_cy, n_w, n_h = cx / img_size_x, cy / img_size_y, w / img_size_x, h / img_size_y
+                if (n_cx < 0 or n_cy < 0 or n_w < 0 or n_h < 0) or (n_cx > 1 or n_cy > 1 or n_w > 1 or n_h > 1):
                     print('origin:', [x1, y1], [x2, y2], [x3, y3], [x4, y4])
                     print('poly', poly)
                     print('rect:', rect)
