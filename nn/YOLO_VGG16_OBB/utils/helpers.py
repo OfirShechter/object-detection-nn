@@ -15,16 +15,16 @@ def iou(box1, box2, is_pred=True):
         polys2 = []
         
         #angle (box1[..., 4]) is in radian than- convert to degree
-        angle1 = box1[..., 4] * (np.pi / 2)
-        angle2 = box2[..., 4] * (np.pi / 2)
-        angle1_degree = np.rad2deg(angle1)
-        angle2_degree = np.rad2deg(angle2)
+        angle1 = box1[..., 4] * (torch.pi / 2)
+        angle2 = box2[..., 4] * (torch.pi / 2)
+        angle1_degree = torch.rad2deg(angle1)
+        angle2_degree = torch.rad2deg(angle2)
 
         for i in range(box1.shape[0]):
             poly1 = cv2.boxPoints(((box1[i, 0].item(), box1[i, 1].item(
-            )), (box1[i, 2].item(), box1[i, 3].item()), angle1_degree[i]))
+            )), (box1[i, 2].item(), box1[i, 3].item()), angle1_degree[i].item()))
             poly2 = cv2.boxPoints(((box2[i, 0].item(), box2[i, 1].item(
-            )), (box2[i, 2].item(), box2[i, 3].item()), angle2_degree[i]))
+            )), (box2[i, 2].item(), box2[i, 3].item()), angle2_degree[i].item()))
             polys1.append(poly1)
             polys2.append(poly2)
 
