@@ -13,7 +13,6 @@ class YOLOLoss(nn.Module):
 		self.sigmoid = nn.Sigmoid() 
 	
 	def forward(self, pred, target, anchors): 
-		print('pred shape:', pred.shape, 'target shape:', target.shape)
 		# Identifying which cells in target have objects 
 		# and which have no objects 
 		obj = target[..., 0] == 1
@@ -34,7 +33,6 @@ class YOLOLoss(nn.Module):
 		# Calculating intersection over union for prediction and target 
 		ious = iou(box_preds[obj], target[..., 1:6][obj]).detach() 
 		# Calculating Object loss 
-		print('pred[..., 0:1][obj]:', pred[..., 0:1][obj].shape, 'target[..., 0:1][obj]:', target[..., 0:1][obj].shape, 'ious * target[..., 0:1][obj]:', (ious * target[..., 0:1][obj]).shape)
 		object_loss = self.mse(self.sigmoid(pred[..., 0:1][obj]), 
 							ious * target[..., 0:1][obj]) 
 
