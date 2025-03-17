@@ -22,9 +22,10 @@ class DotaDataset(Dataset):
         self.img_ids = self.img_ids[:10]
         # Image size
         self.image_size = image_size
-        # Transformations
-        self.transform = transform(
-            image_size) if transform is not None else None
+        # # Transformations
+        # self.transform = transform(
+        #     image_size) if transform is not None else None
+        self.transform = None
         # Grid sizes for each scale
         self.grid_sizes = grid_sizes
         # Anchor boxes
@@ -65,6 +66,7 @@ class DotaDataset(Dataset):
         if img is None:
             raise Exception(f"Failed to load image from {img_path}")
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        img = cv2.resize(img, (self.image_size, self.image_size))
         img = np.array(Image.fromarray(img))
         img_size_x = img.shape[1]
         img_size_y = img.shape[0]
@@ -110,6 +112,9 @@ class DotaDataset(Dataset):
             img = augs["image"]
             bboxes = [[cx, cy, w, h, angle, class_label] for (
                 cx, cy, w, h, class_label), angle in zip(augs["bboxes"], angles)]
+        else:
+            bboxes = [[cx, cy, w, h, angle, class_label]
+                      for (cx, cy, w, h, class_label), angle in zip(bboxes, angles)]
         # Below assumes 3 scale predictions (as paper) and same num of anchors per scale
         # target : [probabilities, x, y, width, height, angle, class_label]
         targets = [torch.zeros((self.num_anchors_per_scale, s, s, 7))
