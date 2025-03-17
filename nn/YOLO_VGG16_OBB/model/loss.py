@@ -34,6 +34,7 @@ class YOLOLoss(nn.Module):
 		# Calculating intersection over union for prediction and target 
 		ious = iou(box_preds[obj], target[..., 1:6][obj]).detach() 
 		# Calculating Object loss 
+		print('pred[..., 0:1][obj]:', pred[..., 0:1][obj].shape, 'target[..., 0:1][obj]:', target[..., 0:1][obj], 'ious * target[..., 0:1][obj]:', ious * target[..., 0:1][obj].shape)
 		object_loss = self.mse(self.sigmoid(pred[..., 0:1][obj]), 
 							ious * target[..., 0:1][obj]) 
 
@@ -43,7 +44,6 @@ class YOLOLoss(nn.Module):
 		# Target box coordinates 
 		target[..., 3:5] = torch.log(1e-6 + target[..., 3:5] / anchors) 
 		# Calculating box coordinate loss 
-		print('mse pred shape:', pred.shape, 'mse target shape:', target.shape)
 
 		box_loss = self.mse(pred[..., 1:6][obj], 
 							target[..., 1:6][obj]) 
