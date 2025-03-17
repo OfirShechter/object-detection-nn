@@ -13,8 +13,8 @@ def iou(box1, box2, is_pred=True):
         # Convert boxes to polygons
         polys1 = []
         polys2 = []
-        
-        #angle (box1[..., 4]) is in radian than- convert to degree
+
+        # angle (box1[..., 4]) is in radian than- convert to degree
         angle1 = box1[..., 4] * (torch.pi / 2)
         angle2 = box2[..., 4] * (torch.pi / 2)
         angle1_degree = torch.rad2deg(angle1)
@@ -38,7 +38,7 @@ def iou(box1, box2, is_pred=True):
         # Calculate union area
         box1_area = box1[..., 2] * box1[..., 3]
         box2_area = box2[..., 2] * box2[..., 3]
-        union_area = box1_area + box2_area - inter_area
+        union_area = torch.tensor(box1_area + box2_area - inter_area)
 
         # Calculate IoU score
         epsilon = 1e-6
@@ -205,7 +205,8 @@ def plot_image(image, boxes, labels, display=True):
         box_points = np.int32(box_points)  # Convert to integer
 
         # Draw the rotated rectangle
-        cv2.polylines(img_drawn, [box_points], isClosed=True, color=color, thickness=2)
+        cv2.polylines(img_drawn, [box_points],
+                      isClosed=True, color=color, thickness=2)
 
         # Put label text near the rectangle
         # label = labels[class_pred]
@@ -220,7 +221,8 @@ def plot_image(image, boxes, labels, display=True):
     if display:
         # Display the image
         plt.figure(figsize=(8, 6))
-        plt.imshow(cv2.cvtColor(img_drawn, cv2.COLOR_BGR2RGB))  # Convert BGR to RGB
+        # Convert BGR to RGB
+        plt.imshow(cv2.cvtColor(img_drawn, cv2.COLOR_BGR2RGB))
         plt.axis("off")
         plt.show()
 
