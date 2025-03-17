@@ -31,7 +31,7 @@ class YOLOLoss(nn.Module):
         pred_angle = torch.tanh(pred[..., 5])
         # Box prediction confidence
         box_preds = torch.cat([self.sigmoid(pred[..., 1:3]),
-                               torch.exp(pred[..., 3:5]) * anchors, pred_angle.unsqueeze(-1)
+                               self.sigmoid(pred[..., 3:5]) * anchors, pred_angle.unsqueeze(-1)
                                ], dim=-1)
         # Calculating intersection over union for prediction and target
         ious = iou(box_preds[obj], target[..., 1:6][obj]).detach()
