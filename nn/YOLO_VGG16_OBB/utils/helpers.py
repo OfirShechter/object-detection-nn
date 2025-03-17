@@ -2,7 +2,7 @@ import cv2
 import torch
 import matplotlib.pyplot as plt
 import numpy as np
-
+from .constants import device
 # Defining a function to calculate Intersection over Union (IoU)
 
 
@@ -38,7 +38,7 @@ def iou(box1, box2, is_pred=True):
         # Calculate union area
         box1_area = box1[..., 2] * box1[..., 3]
         box2_area = box2[..., 2] * box2[..., 3]
-        union_area = torch.tensor(box1_area + box2_area - inter_area)
+        union_area = box1_area + box2_area - inter_area
 
         # Calculate IoU score
         epsilon = 1e-6
@@ -80,7 +80,7 @@ def polygon_intersection_area(poly1, poly2):
             inter_areas.append(0.0)
 
     # Convert result back to a tensor
-    return torch.tensor(inter_areas, dtype=torch.float32)
+    return torch.tensor(inter_areas, dtype=torch.float32, device=device)
 
 
 def nms(bboxes_orig, iou_threshold, threshold):
