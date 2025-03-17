@@ -43,10 +43,11 @@ class YOLOLoss(nn.Module):
 		target[..., 3:5] = torch.log(1e-6 + target[..., 3:5] / anchors) 
 		# Calculating box coordinate loss 
 
-		box_loss = self.mse(pred[..., 1:6][obj], 
-							target[..., 1:6][obj]) 
+		box_loss = self.mse(pred[..., 1:5][obj], 
+							target[..., 1:5][obj]) 
 
-		
+		angle_loss = self.mse(pred[..., 5][obj], 
+							target[..., 5][obj])
 		# Claculating class loss 
 		class_loss = self.cross_entropy((pred[..., 6:][obj]), 
 								target[..., 6][obj].long()) 
@@ -55,6 +56,7 @@ class YOLOLoss(nn.Module):
 		# Total loss 
 		return ( 
 			box_loss 
+   			+ angle_loss
 			+ object_loss 
 			+ no_object_loss 
 			+ class_loss 
