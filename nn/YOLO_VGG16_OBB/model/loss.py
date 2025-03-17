@@ -13,7 +13,7 @@ class YOLOLoss(nn.Module):
 		self.sigmoid = nn.Sigmoid() 
 	
 	def forward(self, pred, target, anchors): 
-		print('pred shape:', pred.shape)
+		print('pred shape:', pred.shape, 'target shape:', target.shape)
 		# Identifying which cells in target have objects 
 		# and which have no objects 
 		obj = target[..., 0] == 1
@@ -43,6 +43,8 @@ class YOLOLoss(nn.Module):
 		# Target box coordinates 
 		target[..., 3:5] = torch.log(1e-6 + target[..., 3:5] / anchors) 
 		# Calculating box coordinate loss 
+		print('mse pred shape:', pred.shape, 'mse target shape:', target.shape)
+
 		box_loss = self.mse(pred[..., 1:6][obj], 
 							target[..., 1:6][obj]) 
 

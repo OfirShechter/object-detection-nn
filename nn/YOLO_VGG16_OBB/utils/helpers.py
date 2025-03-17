@@ -10,7 +10,6 @@ def iou(box1, box2, is_pred=True):
     if is_pred:
         # IoU score for prediction and label
         # box1 (prediction) and box2 (label) are both in [x, y, width, height, angle] format
-        print('iou- box1:', box1.shape, 'box2:', box2.shape)
         # Convert boxes to polygons
         polys1 = []
         polys2 = []
