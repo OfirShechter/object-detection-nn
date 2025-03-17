@@ -185,6 +185,9 @@ def plot_image(image, boxes, labels, display=True):
         class_pred = int(box[0])
         cx, cy, bw, bh, angle = box[2:]
 
+        # angle from rad_than back to degree
+        angle_rad = angle * (np.pi / 2)
+        angle = np.rad2deg(angle_rad)
         # Convert to absolute coordinates
         cx, cy, bw, bh = cx * w, cy * h, bw * w, bh * h
 

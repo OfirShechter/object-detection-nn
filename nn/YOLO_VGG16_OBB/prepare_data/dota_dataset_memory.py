@@ -103,7 +103,9 @@ class DotaDataset(Dataset):
                 # else:
                 #     print('No lower then 0:', n_cx, n_cy, n_w, n_h, angle)
                 bboxes.append([n_cx, n_cy, n_w, n_h, class_label])
-                angles.append(angle)
+                rad_angle = np.deg2rad(angle)
+                than_normelize = rad_angle / (np.pi / 2)
+                angles.append(than_normelize)
         if self.transform is not None:
             augs = self.transform(
                 image=img, bboxes=bboxes)
