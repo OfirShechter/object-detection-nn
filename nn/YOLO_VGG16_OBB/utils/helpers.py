@@ -94,6 +94,7 @@ def nms(bboxes_orig, iou_threshold, threshold):
     while len(bboxes) >= 0:
         # Iterate over the remaining bounding boxes.
         for box in bboxes:
+            print('box shape:', box.shape, 'firstBox shape:', first_box.shape)
             # If the bounding boxes do not overlap or if the first bounding box has
             # a higher confidence, then add the second bounding box to the list of
             # bounding boxes after non-maximum suppression.
