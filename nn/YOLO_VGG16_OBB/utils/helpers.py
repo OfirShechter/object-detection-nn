@@ -39,7 +39,7 @@ def iou(box1, box2, is_pred=True):
         iou_score = inter_area / (union_area + epsilon)
 
         # Return IoU score
-        return iou_score
+        return iou_score.unsqueeze(1)
 
     else:
         # IoU score based on width and height of bounding boxes
