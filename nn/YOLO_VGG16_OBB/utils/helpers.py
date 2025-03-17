@@ -137,11 +137,12 @@ def convert_cells_to_bboxes(predictions, anchors, s, is_predictions=True):
             box_predictions[..., 2:]) * anchors
         scores = torch.sigmoid(predictions[..., 0:1])
         best_class = torch.argmax(predictions[..., 6:], dim=-1).unsqueeze(-1)
-
+        angle = torch.tanh(predictions[..., 5:6])
     # Else we will just calculate scores and best class.
     else:
         scores = predictions[..., 0:1]
         best_class = predictions[..., 6:7]
+        angle = predictions[..., 5:6]
 
     # Calculate cell indices
     cell_indices = (
@@ -156,7 +157,6 @@ def convert_cells_to_bboxes(predictions, anchors, s, is_predictions=True):
     y = 1 / s * (box_predictions[..., 1:2] +
                  cell_indices.permute(0, 1, 3, 2, 4))
     width_height = 1 / s * box_predictions[..., 2:4]
-    angle = predictions[..., 5:6]
     # Concatinating the values and reshaping them in
     # (BATCH_SIZE, num_anchors * S * S, 7) shape
     converted_bboxes = torch.cat(
