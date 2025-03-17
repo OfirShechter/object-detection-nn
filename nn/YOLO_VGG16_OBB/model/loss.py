@@ -38,7 +38,7 @@ class YOLOLoss(nn.Module):
         ious = iou(box_preds[obj], target[..., 1:6][obj]).detach()
         # Calculating Object loss
         object_loss = self.mse(self.sigmoid(pred[..., 0:1][obj]),
-                               ious * target[..., 0:1][obj])
+                               ious * target[..., 0:1][obj]).clamp(0, 100)
 
         # Predicted box coordinates
         pred[..., 1:3] = self.sigmoid(pred[..., 1:3])
