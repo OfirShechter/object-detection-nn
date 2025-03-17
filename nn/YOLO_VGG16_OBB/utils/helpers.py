@@ -125,7 +125,7 @@ def convert_cells_to_bboxes(predictions, anchors, s, is_predictions=True):
     # Number of anchors
     num_anchors = len(anchors)
     # List of all the predictions
-    box_predictions = predictions[..., 1:6]
+    box_predictions = predictions[..., 1:5]
 
     # If the input is predictions then we will pass the x and y coordinate
     # through sigmoid function and width and height to exponent function and
@@ -133,8 +133,8 @@ def convert_cells_to_bboxes(predictions, anchors, s, is_predictions=True):
     if is_predictions:
         anchors = anchors.reshape(1, len(anchors), 1, 1, 2)
         box_predictions[..., 0:2] = torch.sigmoid(box_predictions[..., 0:2])
-        box_predictions[..., 2:5] = torch.exp(
-            box_predictions[..., 2:5]) * anchors
+        box_predictions[..., 2:] = torch.exp(
+            box_predictions[..., 2:]) * anchors
         scores = torch.sigmoid(predictions[..., 0:1])
         best_class = torch.argmax(predictions[..., 6:], dim=-1).unsqueeze(-1)
 
