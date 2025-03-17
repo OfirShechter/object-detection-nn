@@ -23,9 +23,9 @@ class DotaDataset(Dataset):
         # Image size
         self.image_size = image_size
         # # Transformations
-        # self.transform = transform(
-        #     image_size) if transform is not None else None
-        self.transform = None
+        self.transform = transform(
+            image_size) if transform is not None else None
+        # self.transform = None
         # Grid sizes for each scale
         self.grid_sizes = grid_sizes
         # Anchor boxes
