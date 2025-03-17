@@ -183,32 +183,35 @@ def plot_image(image, boxes, labels, display=True):
     # Plot bounding boxes and labels
     for box in boxes:
         class_pred = int(box[0])
-        box = box[2:]
-        upper_left_x = int((box[0] - box[2] / 2) * w)
-        upper_left_y = int((box[1] - box[3] / 2) * h)
-        lower_right_x = int((box[0] + box[2] / 2) * w)
-        lower_right_y = int((box[1] + box[3] / 2) * h)
+        cx, cy, bw, bh, angle = box[2:]
+
+        # Convert to absolute coordinates
+        cx, cy, bw, bh = cx * w, cy * h, bw * w, bh * h
 
         # Get color
         color = colour_map(class_pred)
+        # Get rotated rectangle
+        rect = ((cx, cy), (bw, bh), angle)  # OpenCV expects angle in degrees
+        box_points = cv2.boxPoints(rect)  # Get corner points
+        box_points = np.int32(box_points)  # Convert to integer
 
-        # Draw rectangle on image
-        cv2.rectangle(img_drawn, (upper_left_x, upper_left_y),
-                      (lower_right_x, lower_right_y), color, 2)
+        # Draw the rotated rectangle
+        cv2.polylines(img_drawn, [box_points], isClosed=True, color=color, thickness=2)
 
-        # Put label text
-        label = labels[class_pred]
-        (text_width, text_height), baseline = cv2.getTextSize(
-            label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 2)
-        cv2.rectangle(img_drawn, (upper_left_x, upper_left_y - text_height - 10),
-                      (upper_left_x + text_width, upper_left_y), color, -1)
-        cv2.putText(img_drawn, label, (upper_left_x, upper_left_y - 10),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+        # Put label text near the rectangle
+        # label = labels[class_pred]
+        # (text_width, text_height), baseline = cv2.getTextSize(
+        #     label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 2)
+        # text_x, text_y = int(cx - text_width / 2), int(cy - bh / 2 - 10)
+        # cv2.rectangle(img_drawn, (text_x, text_y - text_height - 4),
+        #               (text_x + text_width, text_y), color, -1)
+        # cv2.putText(img_drawn, label, (text_x, text_y),
+        #             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
 
     if display:
         # Display the image
         plt.figure(figsize=(8, 6))
-        plt.imshow(img_drawn)  # Convert BGR to RGB for correct color display
+        plt.imshow(cv2.cvtColor(img_drawn, cv2.COLOR_BGR2RGB))  # Convert BGR to RGB
         plt.axis("off")
         plt.show()
 
