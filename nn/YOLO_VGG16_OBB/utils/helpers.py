@@ -29,8 +29,8 @@ def iou(box1, box2, is_pred=True):
             np.append(polys2, poly2)
 
         # Convert polygons to torch tensors
-        poly1 = torch.tensor(polys1, dtype=torch.float32)
-        poly2 = torch.tensor(polys2, dtype=torch.float32)
+        poly1 = torch.tensor(polys1, dtype=torch.float64)
+        poly2 = torch.tensor(polys2, dtype=torch.float64)
 
         # Calculate intersection area
         inter_area = polygon_intersection_area(poly1, poly2)
@@ -69,8 +69,8 @@ def iou(box1, box2, is_pred=True):
 
 def polygon_intersection_area(poly1, poly2):
     # Ensure tensors are on CPU and convert to NumPy
-    poly1_np = poly1.detach().cpu().numpy().astype(np.float32)
-    poly2_np = poly2.detach().cpu().numpy().astype(np.float32)
+    poly1_np = poly1.detach().cpu().numpy().astype(np.float64)
+    poly2_np = poly2.detach().cpu().numpy().astype(np.float64)
 
     inter_areas = []
     for p1, p2 in zip(poly1_np, poly2_np):
@@ -81,7 +81,7 @@ def polygon_intersection_area(poly1, poly2):
             inter_areas.append(0.0)
 
     # Convert result back to a tensor
-    return torch.tensor(inter_areas, dtype=torch.float32, device=device)
+    return torch.tensor(inter_areas, dtype=torch.float64, device=device)
 
 
 def nms(bboxes_orig, iou_threshold, threshold):

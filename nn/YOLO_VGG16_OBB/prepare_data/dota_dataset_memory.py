@@ -90,7 +90,7 @@ class DotaDataset(Dataset):
 
                 # Convert OBB to (cx, cy, w, h, angle)
                 poly = np.array([[x1, y1], [x2, y2], [x3, y3], [
-                                x4, y4]], dtype=np.float32).reshape((-1, 1, 2))
+                                x4, y4]]).reshape((-1, 1, 2))
                 rect = cv2.minAreaRect(poly)
                 (cx, cy), (w, h), angle = rect
                 n_cx, n_cy, n_w, n_h = cx / img_size_x, cy / img_size_y, w / img_size_x, h / img_size_y
@@ -102,6 +102,8 @@ class DotaDataset(Dataset):
                           w, 'h:', h, 'angle:', angle)
                 # else:
                 #     print('No lower then 0:', n_cx, n_cy, n_w, n_h, angle)
+                n_cx, n_cy, n_w, n_h = np.clip(
+                    [n_cx, n_cy, n_w, n_h], 0, 1, dtype=np.float64)
                 bboxes.append([n_cx, n_cy, n_w, n_h, class_label])
                 rad_angle = np.deg2rad(angle)
                 than_normelize = rad_angle / (np.pi / 2)
@@ -162,7 +164,7 @@ class DotaDataset(Dataset):
                     # Idnetify the box coordinates
                     box_coordinates = torch.tensor(
                         [x_cell, y_cell, width_cell,
-                         height_cell, angle]
+                         height_cell, angle], dtype=torch.float64
                     )
 
                     # Assigning the box coordinates to the target
