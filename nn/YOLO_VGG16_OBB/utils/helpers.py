@@ -11,8 +11,8 @@ def iou(box1, box2, is_pred=True):
         # IoU score for prediction and label
         # box1 (prediction) and box2 (label) are both in [x, y, width, height, angle] format
         # Convert boxes to polygons
-        polys1 = np.array([])
-        polys2 = np.array([])
+        polys1 = []
+        polys2 = []
 
         # angle (box1[..., 4]) is in radian than- convert to degree
         angle1 = box1[..., 4] * (torch.pi / 2)
@@ -25,16 +25,14 @@ def iou(box1, box2, is_pred=True):
             )), (box1[i, 2].item(), box1[i, 3].item()), angle1_degree[i].item()))
             poly2 = cv2.boxPoints(((box2[i, 0].item(), box2[i, 1].item(
             )), (box2[i, 2].item(), box2[i, 3].item()), angle2_degree[i].item()))
-            np.append(polys1, poly1)
-            np.append(polys2, poly2)
+            polys1.append(poly1)
+            polys2.append(poly2)
 
         # Convert polygons to torch tensors
-        poly1 = torch.tensor(polys1, dtype=torch.float32)
-        poly2 = torch.tensor(polys2, dtype=torch.float32)
-
+        poly1 = np.array(polys1, dtype=np.float32)
+        poly2 = np.array(polys2, dtype=np.float32)
         # Calculate intersection area
         inter_area = polygon_intersection_area(poly1, poly2)
-
         # Calculate union area
         box1_area = box1[..., 2] * box1[..., 3]
         box2_area = box2[..., 2] * box2[..., 3]
@@ -67,10 +65,10 @@ def iou(box1, box2, is_pred=True):
 
 
 
-def polygon_intersection_area(poly1, poly2):
+def polygon_intersection_area(poly1_np, poly2_np):
     # Ensure tensors are on CPU and convert to NumPy
-    poly1_np = poly1.detach().cpu().numpy().astype(np.float32)
-    poly2_np = poly2.detach().cpu().numpy().astype(np.float32)
+    # poly1_np = poly1.detach().cpu().numpy().astype(np.float32)
+    # poly2_np = poly2.detach().cpu().numpy().astype(np.float32)
 
     inter_areas = []
     for p1, p2 in zip(poly1_np, poly2_np):
@@ -79,7 +77,7 @@ def polygon_intersection_area(poly1, poly2):
             inter_areas.append(cv2.contourArea(inter_poly[1]))
         else:
             inter_areas.append(0.0)
-
+    inter_areas = np.array(inter_areas, dtype=np.float32)
     # Convert result back to a tensor
     return torch.tensor(inter_areas, dtype=torch.float32, device=device)
 
