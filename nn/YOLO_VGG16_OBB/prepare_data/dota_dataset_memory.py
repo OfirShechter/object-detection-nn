@@ -67,6 +67,7 @@ class DotaDataset(Dataset):
             raise Exception(f"Failed to load image from {img_path}")
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         img = np.array(Image.fromarray(img))
+        img = torch.tensor(img, dtype=torch.float32)  
         img_size_x = img.shape[1]
         img_size_y = img.shape[0]
         # Load labels
@@ -94,14 +95,10 @@ class DotaDataset(Dataset):
                 rect = cv2.minAreaRect(poly)
                 (cx, cy), (w, h), angle = rect
                 n_cx, n_cy, n_w, n_h = cx / img_size_x, cy / img_size_y, w / img_size_x, h / img_size_y
-                if (n_cx < 0 or n_cy < 0 or n_w < 0 or n_h < 0) or (n_cx > 1 or n_cy > 1 or n_w > 1 or n_h > 1):
-                    print('origin:', [x1, y1], [x2, y2], [x3, y3], [x4, y4])
-                    print('poly', poly)
-                    print('rect:', rect)
-                    print('cx:', cx, 'cy:', cy, 'w:',
-                          w, 'h:', h, 'angle:', angle)
-                # else:
-                #     print('No lower then 0:', n_cx, n_cy, n_w, n_h, angle)
+                n_cx = np.clip(n_cx, 0, 1)
+                n_cy = np.clip(n_cy, 0, 1)
+                n_w = np.clip(n_w, 0, 1)
+                n_h = np.clip(n_h, 0, 1)
                 bboxes.append([n_cx, n_cy, n_w, n_h, class_label])
                 rad_angle = np.deg2rad(angle)
                 than_normelize = rad_angle / (np.pi / 2)
@@ -117,7 +114,7 @@ class DotaDataset(Dataset):
                       for (cx, cy, w, h, class_label), angle in zip(bboxes, angles)]
         # Below assumes 3 scale predictions (as paper) and same num of anchors per scale
         # target : [probabilities, x, y, width, height, angle, class_label]
-        targets = [torch.zeros((self.num_anchors_per_scale, s, s, 7))
+        targets = [torch.zeros((self.num_anchors_per_scale, s, s, 7), dtype=torch.float32)
                    for s in self.grid_sizes]
 
         # Identify anchor box and cell for each bounding box
