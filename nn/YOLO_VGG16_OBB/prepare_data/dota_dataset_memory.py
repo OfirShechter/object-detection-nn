@@ -2,7 +2,6 @@ import os
 import torch
 from torch.utils.data import Dataset
 from ..utils.helpers import iou
-from ..utils.constants import device
 import cv2
 import numpy as np
 from PIL import Image
