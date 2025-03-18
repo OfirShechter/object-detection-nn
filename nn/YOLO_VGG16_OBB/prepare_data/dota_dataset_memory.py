@@ -2,6 +2,7 @@ import os
 import torch
 from torch.utils.data import Dataset
 from ..utils.helpers import iou
+from ..utils.constants import device
 import cv2
 import numpy as np
 from PIL import Image
@@ -123,7 +124,7 @@ class DotaDataset(Dataset):
         # Identify anchor box and cell for each bounding box
         for box in bboxes:
             # Calculate iou of bounding box with anchor boxes
-            iou_anchors = iou(torch.tensor(box[2:4]),
+            iou_anchors = iou(torch.tensor(box[2:4], device=device),
                               self.anchors,
                               is_pred=False)
             # Selecting the best anchor box
