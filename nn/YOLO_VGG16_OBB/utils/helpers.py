@@ -55,8 +55,8 @@ def iou(box1, box2, is_pred=True):
             box1[..., 0], box2[..., 0]) * torch.min(box1[..., 1], box2[..., 1])
 
         # Calculate union area
-        box1_area = box1[..., 0] * box1[..., 1]
-        box2_area = box2[..., 0] * box2[..., 1]
+        box1_area = torch.tensor(box1[..., 0] * box1[..., 1], device=device)
+        box2_area = torch.tensor(box2[..., 0] * box2[..., 1], device=device)
         union_area = box1_area + box2_area - intersection_area
 
         # Calculate IoU score
