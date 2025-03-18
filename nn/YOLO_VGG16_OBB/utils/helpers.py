@@ -11,8 +11,8 @@ def iou(box1, box2, is_pred=True):
         # IoU score for prediction and label
         # box1 (prediction) and box2 (label) are both in [x, y, width, height, angle] format
         # Convert boxes to polygons
-        polys1 = []
-        polys2 = []
+        polys1 = np.array([])
+        polys2 = np.array([])
 
         # angle (box1[..., 4]) is in radian than- convert to degree
         angle1 = box1[..., 4] * (torch.pi / 2)
@@ -25,8 +25,8 @@ def iou(box1, box2, is_pred=True):
             )), (box1[i, 2].item(), box1[i, 3].item()), angle1_degree[i].item()))
             poly2 = cv2.boxPoints(((box2[i, 0].item(), box2[i, 1].item(
             )), (box2[i, 2].item(), box2[i, 3].item()), angle2_degree[i].item()))
-            polys1.append(poly1)
-            polys2.append(poly2)
+            np.append(polys1, poly1)
+            np.append(polys2, poly2)
 
         # # Convert polygons to torch tensors
         # poly1 = torch.tensor(polys1, dtype=torch.float32)
@@ -45,7 +45,7 @@ def iou(box1, box2, is_pred=True):
         iou_score = inter_area / (union_area + epsilon)
 
         # Return IoU score
-        return iou_score
+        return iou_score.unsqueeze(1)
 
     else:
         # IoU score based on width and height of bounding boxes
