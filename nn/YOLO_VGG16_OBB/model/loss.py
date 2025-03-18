@@ -22,7 +22,7 @@ class YOLOLoss(nn.Module):
         no_obj = target[..., 0] == 0
 
         # Calculating No object loss
-        no_object_loss = 4 * self.bce(
+        no_object_loss = self.bce(
             (pred[..., 0:1][no_obj]), (target[..., 0:1][no_obj]),
         )
 
