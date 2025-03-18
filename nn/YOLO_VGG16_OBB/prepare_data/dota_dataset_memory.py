@@ -94,14 +94,15 @@ class DotaDataset(Dataset):
                 rect = cv2.minAreaRect(poly)
                 (cx, cy), (w, h), angle = rect
                 n_cx, n_cy, n_w, n_h = cx / img_size_x, cy / img_size_y, w / img_size_x, h / img_size_y
-                n_cx = np.clip(n_cx, 0, 1)
-                n_cy = np.clip(n_cy, 0, 1)
-                n_w = np.clip(n_w, 0, 1)
-                n_h = np.clip(n_h, 0, 1)
+                n_cx = np.clip(n_cx, 0, 1, dtype=np.float32)
+                n_cy = np.clip(n_cy, 0, 1, dtype=np.float32)
+                n_w = np.clip(n_w, 0, 1, dtype=np.float32)
+                n_h = np.clip(n_h, 0, 1, dtype=np.float32)
                 bboxes.append([n_cx, n_cy, n_w, n_h, class_label])
                 rad_angle = np.deg2rad(angle)
                 than_normelize = rad_angle / (np.pi / 2)
                 angles.append(than_normelize)
+
         if self.transform is not None:
             augs = self.transform(
                 image=img, bboxes=bboxes)
@@ -158,8 +159,8 @@ class DotaDataset(Dataset):
                     # Idnetify the box coordinates
                     box_coordinates = torch.tensor(
                         [x_cell, y_cell, width_cell,
-                         height_cell, angle]
-                    )
+                         height_cell, angle], dtype=torch.float32)
+                    
 
                     # Assigning the box coordinates to the target
                     targets[scale_idx][anchor_on_scale,
