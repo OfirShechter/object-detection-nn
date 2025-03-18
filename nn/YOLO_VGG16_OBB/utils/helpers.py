@@ -80,7 +80,7 @@ def polygon_intersection_area(poly1, poly2):
             inter_areas.append(0.0)
 
     # Convert result back to a tensor
-    return torch.tensor(inter_areas, dtype=torch.float32)
+    return torch.tensor(inter_areas, dtype=torch.float32, device=device)
 
 
 def nms(bboxes_orig, iou_threshold, threshold):
