@@ -28,9 +28,9 @@ def iou(box1, box2, is_pred=True):
             polys1.append(poly1)
             polys2.append(poly2)
 
-        # Convert polygons to torch tensors
-        poly1 = torch.tensor(polys1, dtype=torch.float32)
-        poly2 = torch.tensor(polys2, dtype=torch.float32)
+        # # Convert polygons to torch tensors
+        # poly1 = torch.tensor(polys1, dtype=torch.float32)
+        # poly2 = torch.tensor(polys2, dtype=torch.float32)
 
         # Calculate intersection area
         inter_area = polygon_intersection_area(poly1, poly2)
@@ -66,11 +66,7 @@ def iou(box1, box2, is_pred=True):
         return iou_score.unsqueeze(1)
 
 
-def polygon_intersection_area(poly1, poly2):
-    # Ensure tensors are on CPU and convert to NumPy
-    poly1_np = poly1.detach().cpu().numpy().astype(np.float32)
-    poly2_np = poly2.detach().cpu().numpy().astype(np.float32)
-
+def polygon_intersection_area(poly1_np, poly2_np):
     inter_areas = []
     for p1, p2 in zip(poly1_np, poly2_np):
         inter_poly = cv2.intersectConvexConvex(p1, p2)
