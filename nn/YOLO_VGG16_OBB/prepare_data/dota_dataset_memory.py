@@ -66,7 +66,7 @@ class DotaDataset(Dataset):
         if img is None:
             raise Exception(f"Failed to load image from {img_path}")
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        img = np.array(Image.fromarray(img))
+        img = np.array(Image.fromarray(img), dtype=np.float32) / 255.0
         img_size_x = img.shape[1]
         img_size_y = img.shape[0]
         # Load labels
@@ -82,7 +82,7 @@ class DotaDataset(Dataset):
                 parts = line.strip().split()
                 if len(parts) < 10:
                     continue  # Skip invalid lines
-                x1, y1, x2, y2, x3, y3, x4, y4 = map(float, parts[:8])
+                x1, y1, x2, y2, x3, y3, x4, y4 = np.array(parts[:8], dtype=np.float32)
                 category = parts[8]
                 if category not in self.cat_ids_map:
                     raise Exception(f"Unknown category: {category}")
@@ -90,7 +90,7 @@ class DotaDataset(Dataset):
 
                 # Convert OBB to (cx, cy, w, h, angle)
                 poly = np.array([[x1, y1], [x2, y2], [x3, y3], [
-                                x4, y4]]).reshape((-1, 1, 2))
+                                x4, y4]], dtype=np.float32).reshape((-1, 1, 2))
                 rect = cv2.minAreaRect(poly)
                 (cx, cy), (w, h), angle = rect
                 n_cx, n_cy, n_w, n_h = cx / img_size_x, cy / img_size_y, w / img_size_x, h / img_size_y
@@ -103,7 +103,7 @@ class DotaDataset(Dataset):
                 # else:
                 #     print('No lower then 0:', n_cx, n_cy, n_w, n_h, angle)
                 n_cx, n_cy, n_w, n_h = np.clip(
-                    [n_cx, n_cy, n_w, n_h], 0, 1, dtype=np.float64)
+                    [n_cx, n_cy, n_w, n_h], 0, 1, dtype=np.float32)
                 bboxes.append([n_cx, n_cy, n_w, n_h, class_label])
                 rad_angle = np.deg2rad(angle)
                 than_normelize = rad_angle / (np.pi / 2)
@@ -164,7 +164,7 @@ class DotaDataset(Dataset):
                     # Idnetify the box coordinates
                     box_coordinates = torch.tensor(
                         [x_cell, y_cell, width_cell,
-                         height_cell, angle], dtype=torch.float64
+                         height_cell, angle], dtype=torch.float32
                     )
 
                     # Assigning the box coordinates to the target
