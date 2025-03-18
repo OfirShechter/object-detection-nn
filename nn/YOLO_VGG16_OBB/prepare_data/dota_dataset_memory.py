@@ -66,7 +66,7 @@ class DotaDataset(Dataset):
         if img is None:
             raise Exception(f"Failed to load image from {img_path}")
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        img = np.array(Image.fromarray(img), dtype=np.float32) / 255.0
+        img = np.array(Image.fromarray(img), dtype=np.float32)
         img_size_x = img.shape[1]
         img_size_y = img.shape[0]
         # Load labels
