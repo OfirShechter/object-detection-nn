@@ -56,12 +56,12 @@ class YOLOLoss(nn.Module):
         class_loss = self.cross_entropy((pred[..., 6:][obj]),
                                         target[..., 6][obj].long())
 
-        print('~~~~~~~~~~~~~ FIND UNCAPPED ~~~~~~~~~~~~~')
-        print('box_loss:', box_loss)
-        print('angle_loss:', angle_loss)
-        print('object_loss:', object_loss)
-        print('no_object_loss:', no_object_loss)
-        print('class_loss:', class_loss)
+        # print('~~~~~~~~~~~~~ FIND UNCAPPED ~~~~~~~~~~~~~')
+        # print('box_loss:', box_loss)
+        # print('angle_loss:', angle_loss)
+        # print('object_loss:', object_loss)
+        # print('no_object_loss:', no_object_loss)
+        # print('class_loss:', class_loss)
 
         # Total loss
         return (
