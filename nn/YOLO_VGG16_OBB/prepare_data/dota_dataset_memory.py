@@ -124,7 +124,7 @@ class DotaDataset(Dataset):
         # Identify anchor box and cell for each bounding box
         for box in bboxes:
             # Calculate iou of bounding box with anchor boxes
-            iou_anchors = iou(torch.tensor(box[2:4], device=device),
+            iou_anchors = iou(torch.tensor(box[2:4]),
                               self.anchors,
                               is_pred=False)
             # Selecting the best anchor box
