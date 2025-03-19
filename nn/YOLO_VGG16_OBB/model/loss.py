@@ -22,9 +22,13 @@ class YOLOLoss(nn.Module):
         no_obj = target[..., 0] == 0
 
         # Calculating No object loss
-        no_object_loss = 4 * self.bce(
-            (pred[..., 0:1][no_obj]), (target[..., 0:1][no_obj]),
+        no_object_loss = 10 * self.bce(
+            self.sigmoid(pred[..., 0:1][no_obj]), (target[..., 0:1][no_obj]),
         )
+        
+        # reg_object_loss = 10 * self.bce(
+        #     self.sigmoid(pred[..., 0:1][obj]), (target[..., 0:1][obj]),
+        # )
 
         # Reshaping anchors to match predictions
         anchors = anchors.reshape(1, 3, 1, 1, 2)
@@ -37,8 +41,8 @@ class YOLOLoss(nn.Module):
         # Calculating intersection over union for prediction and target
         ious = iou(box_preds[obj], target[..., 1:6][obj]).detach()
         # Calculating Object loss
-        object_loss = self.mse(self.sigmoid(pred[..., 0:1][obj]),
-                               ious * target[..., 0:1][obj]).clamp(0, 100)
+        object_loss = 10 * self.mse(self.sigmoid(pred[..., 0:1][obj]),
+                               ious * target[..., 0:1][obj]).clamp(0, 10)
 
         # Predicted box coordinates
         pred[..., 1:3] = self.sigmoid(pred[..., 1:3])
@@ -50,7 +54,7 @@ class YOLOLoss(nn.Module):
                             target[..., 1:5][obj])
 
         # Calculate angle loss
-        angle_loss = self.mse(pred_angle[obj],
+        angle_loss = 10 * self.mse(pred_angle[obj],
                               target[..., 5][obj])
         # Claculating class loss
         class_loss = self.cross_entropy((pred[..., 6:][obj]),
@@ -62,6 +66,7 @@ class YOLOLoss(nn.Module):
         # print('object_loss:', object_loss)
         # print('no_object_loss:', no_object_loss)
         # print('class_loss:', class_loss)
+        # print('reg_object_loss', reg_object_loss)
 
         # Total loss
         return (
@@ -70,4 +75,5 @@ class YOLOLoss(nn.Module):
             + object_loss
             + no_object_loss
             + class_loss
+            # + reg_object_loss
         )
