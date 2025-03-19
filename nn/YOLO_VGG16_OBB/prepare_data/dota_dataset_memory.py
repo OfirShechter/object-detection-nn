@@ -90,16 +90,20 @@ class DotaDataset(Dataset):
 
                 # Convert OBB to (cx, cy, w, h, angle)
                 poly = np.array([[x1, y1], [x2, y2], [x3, y3], [
-                                x4, y4]], dtype=np.float32).reshape((-1, 1, 2))
+                                x4, y4]]).reshape((-1, 1, 2))
+                poly[:, 0, 0] /= img_size_x  # Normalize X coordinates
+                poly[:, 0, 1] /= img_size_y  # Normalize Y coordinates
+
                 rect = cv2.minAreaRect(poly)
-                (cx, cy), (w, h), angle = rect
-                n_cx, n_cy, n_w, n_h = cx / img_size_x, cy / img_size_y, w / img_size_x, h / img_size_y
+                (n_cx, n_cy), (n_w, n_h), angle = rect
+
                 if (n_cx < 0 or n_cy < 0 or n_w < 0 or n_h < 0) or (n_cx > 1 or n_cy > 1 or n_w > 1 or n_h > 1):
                     print('origin:', [x1, y1], [x2, y2], [x3, y3], [x4, y4])
                     print('poly', poly)
                     print('rect:', rect)
-                    print('cx:', cx, 'cy:', cy, 'w:',
-                          w, 'h:', h, 'angle:', angle)
+                    print('n_cx:', n_cx, 'n_cy:', n_cy, 'n_w:',
+                          n_w, 'n_h:', n_h, 'angle:', angle)
+                    print('img_size_x:', img_size_x, 'img_size_y:', img_size_y)
                 # else:
                 #     print('No lower then 0:', n_cx, n_cy, n_w, n_h, angle)
                 n_cx, n_cy, n_w, n_h = np.clip(
