@@ -1,3 +1,4 @@
+
 import torch
 import torchvision.transforms as transforms
 from torchvision import models
@@ -41,3 +42,5 @@ for image_path in os.listdir(images_base_path):
     plt.axis("off")
     plt.title(f"Prediction: {predicted_label}")
     plt.show()
+
+# %%
