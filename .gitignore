@@ -2,6 +2,7 @@
 .vscode
 __pycache__
 *.docx
+*.pdf
 nn/cocodataset/annotations/*
 !nn/cocodataset/annotations/.gitkeep
 nn/cocodataset/images/*
