@@ -3,11 +3,11 @@ Object detection network based on YOLOv3 architecture with VGG16 as backbone.
 
 YOLOv3 code based on this tutorial- https://www.geeksforgeeks.org/yolov3-from-scratch-using-pytorch/
 
-## Part1- ingle class and single object per frame detection
+## Part1- single class and single object per frame detection
  [![one dog detection](./results/one_dog_detection.gif)](./results/one_dog_detection.mp4)
 
- ## 3D Cube
-  [![3D Cube](./results/output_cube.gif)](./results/output_cube.mp4)
+ ## Part2- single class and multiple object per frame detection
+  [![multiple_airplane_detection](./results/multiple_airplane_detection.gif)](./results/multiple_airplane_detection.mp4)
 
   ## 3D Duck
 [![3D Duck](./results/output_3d_model.gif)](./results/output_3d_model.mp4)
