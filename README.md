@@ -6,11 +6,11 @@ YOLOv3 code based on this tutorial- https://www.geeksforgeeks.org/yolov3-from-sc
 ## Part1- single class and single object per frame detection
  [![one dog detection](./results/one_dog_detection.gif)](./results/one_dog_detection.mp4)
 
- ## Part2- single class and multiple object per frame detection
+ ## Part2- single class and multiple objects per frame detection
   [![multiple_airplane_detection](./results/multiple_airplane_detection.gif)](./results/multiple_airplane_detection.mp4)
 
-  ## 3D Duck
-[![3D Duck](./results/output_3d_model.gif)](./results/output_3d_model.mp4)
+  ## Part3- multiple classes and multiple objects per frame detection
+[![car_person_detection](./results/car_person_detection.gif)](./results/car_person_detection.mp4)
 
 ### Video Sources
 
